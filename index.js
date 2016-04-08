@@ -1,3 +1,8 @@
-import transformer from './core/transformer';
+require('babel/register');
 
-export default transformer;
+var transformer = require('./core/transformer');
+module.export = transformer;
+
+
+
+
