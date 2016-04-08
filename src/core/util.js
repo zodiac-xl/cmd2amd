@@ -17,7 +17,7 @@ function pathAbsolute(dirname, path) {
 }
 
 
-function makeAMD(fnStr, modules) {
+function makeAMD(fnStr, modules,modulePrefix) {
 
 
     let rs = `define([modulesPath],function(modulesName){ \n var module = {}; \n var exports ={}; \n ${fnStr} \n })`;
@@ -32,12 +32,11 @@ function makeAMD(fnStr, modules) {
     });
 
     modulesPath = modulesPath.map(function (item) {
-        let rs = '/amd/' + item + '';
+        let rs = '"'+path.join(modulePrefix,item)+'"';
         if (path.parse(item).ext == '.less') {
             rs = rs.replace('.less', '');
             rs = 'css!' + rs;
         }
-        rs = '"' + rs + '"';
         return rs;
     });
     modulesPath.join(',');

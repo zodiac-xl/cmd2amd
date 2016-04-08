@@ -30,6 +30,8 @@ let sourcePath;
 let rootPath;
 let externals;
 let needPackRegExp;
+let modulePrefix;
+
 let loadedMap = {};
 
 function doTransform(options) {
@@ -39,6 +41,7 @@ function doTransform(options) {
     rootPath = options.rootPath;
     externals = options.externals ||{};
     needPackRegExp = options.needPackRegExp || [];
+    modulePrefix = options.modulePrefix || '';
 
 
     del.sync(distPath);
@@ -136,7 +139,7 @@ function babelAndAmd(distFilePath, distPath) {
                     output: {
                         library: 'packedModule',
                         libraryTarget: 'var'
-                    },
+                    }
                 }
             ))
             .pipe(wrapper(
@@ -165,6 +168,7 @@ function babelAndAmd(distFilePath, distPath) {
             ef.write(distFile, result.code, 'utf8');
             return;
         }
+
 
 
         let modules = [];
@@ -241,7 +245,7 @@ function babelAndAmd(distFilePath, distPath) {
         //amd 返回值
         arrRs.push(`\n return (!module.exports)?(exports['default']||exports):module.exports;\n`);
 
-        let amdRs = makeAMD(arrRs.join(''), modules);
+        let amdRs = makeAMD(arrRs.join(''), modules,modulePrefix);
         ef.write(distFile, amdRs, 'utf8');
     });
 }
