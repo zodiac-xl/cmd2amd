@@ -1,0 +1,23 @@
+{
+  "name": "cmd2amd",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+  "author": {
+    "name": "zodiac",
+    "email": "wxlgame0105@163.com"
+  },
+  "bugs": {
+    "url": "https://github.com/zodiac-xl/cmd2amd/issues"
+  },
+  "homepage": "https://github.com/zodiac-xl/cmd2amd#readme",
+  "_npmUser": {
+    "name": "wuxiaolong",
+    "email": "wxlgame0105@163.com"
+  },
+  "license": "MIT"
+}
