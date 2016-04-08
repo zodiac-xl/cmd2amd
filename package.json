@@ -6,11 +6,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-
   "author": {
     "name": "zodiac",
     "email": "wxlgame0105@163.com"
   },
+  "keywords": [
+    "cmd",
+    "amd",
+    "node_modules",
+    "node",
+    "pack",
+    "webpack"
+  ],
   "bugs": {
     "url": "https://github.com/zodiac-xl/cmd2amd/issues"
   },
