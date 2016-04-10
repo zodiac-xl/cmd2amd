@@ -5,7 +5,7 @@ import concat       from 'concat-regexp';
 import ef           from 'easy-file'
 
 import gulp         from 'gulp'
-import webpack      from 'gulp-webpack';
+import webpack      from 'webpack-stream';
 import less         from 'gulp-less';
 import rename       from 'gulp-rename';
 import wrapper      from 'gulp-wrapper';

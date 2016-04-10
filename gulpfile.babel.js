@@ -10,7 +10,9 @@ let distPath = test + '/dist';
 let sourcePath = test + '/source';
 let rootPath = path.join(test, '../');
 let externals = {};
-let needPackRegExp = [];
+let needPackRegExp = [
+    'b.js'
+];
 let modulePrefix = '/dist/';
 let needWatch = true;
 
