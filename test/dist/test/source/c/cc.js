@@ -2,7 +2,7 @@
 
 define(["/dist/test/source/b.js"], function (ref_0) {
 
-    var cmd2amdModules = {"./b.js":{"index":0,"path":"test/source/b.js"}};
+    var cmd2amdModules = {"../b.js":{"index":0,"path":"test/source/b.js"}};
     var cmd2amdModulesRef = arguments;
 
     var packedModule = (function () {
@@ -25,11 +25,9 @@ define(["/dist/test/source/b.js"], function (ref_0) {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _bJs = cmd2amdLoadModule('./b.js');
+var _bJs = cmd2amdLoadModule('../b.js');
 
-var _bJs2 = _interopRequireDefault(_bJs);
-
-module.exports = { a: 'ccc' };;
+var _bJs2 = _interopRequireDefault(_bJs);;
 
         return module == {} ? null : !module.exports ? exports : module.exports;
     })();

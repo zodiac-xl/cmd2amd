@@ -1,8 +1,8 @@
 'use strict';
 
-define([dependsPlaceholder], function (refersPlaceholder) {
+define([], function () {
 
-    var cmd2amdModules = cmd2amdModulesPlaceholder;
+    var cmd2amdModules = {};
     var cmd2amdModulesRef = arguments;
 
     var packedModule = (function () {
@@ -21,7 +21,9 @@ define([dependsPlaceholder], function (refersPlaceholder) {
             return refer;
         };
 
-        callbackPlaceholder;
+        'use strict';
+
+module.exports = { a: 'ccc' };;
 
         return module == {} ? null : !module.exports ? exports : module.exports;
     })();

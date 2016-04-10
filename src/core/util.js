@@ -102,11 +102,7 @@ function getModulePath(filePath, relatePath, nodeModuleDir) {
     }
 
     if (!pathExists.sync(filePath)) {
-        console.log('relatePath' + relatePath);
-
-        console.error('not fount' + filePath);
-
-        filePath = null;
+        console.error('not fount:' + filePath);
     }
 
     return filePath

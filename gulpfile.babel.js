@@ -1,6 +1,7 @@
 import gulp                         from 'gulp'
 import cmd2amd                      from './lib/index.js'
 import path                         from 'path'
+import watch                         from 'gulp-watch'
 
 
 //config
@@ -31,5 +32,5 @@ gulp.task('b', function (cb) {
 
 gulp.task('c', function (cb) {
 
-
 });
+
