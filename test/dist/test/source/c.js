@@ -23,7 +23,7 @@ define([], function () {
 
         'use strict';
 
-module.exports = { a: 'ccc' };;
+module.exports = { a: 'eee' };;
 
         return module == {} ? null : !module.exports ? exports : module.exports;
     })();

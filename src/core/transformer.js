@@ -57,16 +57,29 @@ function doTransform(options) {
 
     if (needWatch) {
         watch(sourcePath + '/**', function (file, e) {
-            if (file.event == 'add') {
-                l(`file ${file.event}: ${file.path}`);
-                try {
-                    babelAndAmd(file.path, distPath);
-                } catch (e) {
-                    l(file, 'file');
-                    console.log(e);
-                }
+            let filePath = file.path;
+            l(`file ${file.event}: ${filePath}`);
+            switch (file.event) {
+                case 'add':
+                    try {
+                        babelAndAmd(filePath, distPath);
+                    } catch (e) {
+                        l(file, 'file');
+                        console.log(e);
+                    }
+                    break;
+                case 'change':
+                    loadedMap[filePath] = false;
+                    babelAndAmd(filePath, distPath);
+                    break;
+                case 'unlink':
+                    delete loadedMap[filePath];
+                    let distFile = path.join(distPath, pathAbsolute(rootPath, filePath));
+                    del.sync(distFile);
+                    break;
             }
         });
+
     }
 
     let files = fu.list(sourcePath, {
@@ -109,24 +122,6 @@ function babelAndAmd(distFilePath, distPath) {
         return;
     }
 
-    if (needWatch && loadedMap[sourceFilePath] == undefined) {
-        watch(sourceFilePath, function (file, e) {
-            if (file.event == 'add') {
-                return;
-            }
-            l(`file ${file.event}: ${sourceFilePath}`);
-            switch (file.event) {
-                case 'change':
-                    loadedMap[sourceFilePath] = false;
-                    babelAndAmd(distFilePath, distPath);
-                    break;
-                case 'unlink':
-                    delete loadedMap[sourceFilePath];
-                    del.sync(distFile);
-                    break;
-            }
-        });
-    }
 
     loadedMap[sourceFilePath] = true;
 

@@ -23,7 +23,7 @@ define([], function () {
 
         'use strict';
 
-exports = { a: 'ccc' };;
+exports = { a: 'adsade' };;
 
         return module == {} ? null : !module.exports ? exports : module.exports;
     })();

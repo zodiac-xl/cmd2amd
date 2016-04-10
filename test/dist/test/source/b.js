@@ -23,7 +23,7 @@ define([], function () {
 
         'use strict';
 
-var a = 'dsadsa';;
+var a = 'aaaaa';;
 
         return module == {} ? null : !module.exports ? exports : module.exports;
     })();
