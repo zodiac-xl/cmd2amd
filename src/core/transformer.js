@@ -12,7 +12,7 @@ import wrapper      from 'gulp-wrapper';
 import watch        from 'gulp-watch';
 
 
-let babel = require("babel-core");
+let babel = require("babel");
 
 import {pathAbsolute,makeAMD,getModulePath} from './util';
 
@@ -122,7 +122,6 @@ function babelAndAmd(distFilePath, distPath) {
     //for nodeModule
     let needPack = false;
 
-    needPackRegExp = [needPackRegExp];
     needPackRegExp.some(function (item) {
         if ((new RegExp(item)).test(sourceFilePath)) {
             needPack = true;

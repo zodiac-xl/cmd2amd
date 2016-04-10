@@ -1,2 +1,2 @@
-require('./b.js');
-module.exports={a:'dsads'};
+import v from './b.js';
+module.exports={a:'ccc'};

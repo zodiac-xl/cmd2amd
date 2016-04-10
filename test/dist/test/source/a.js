@@ -23,8 +23,13 @@ define(["/dist/test/source/b.js"], function (ref_0) {
 
         'use strict';
 
-cmd2amdLoadModule('./b.js');
-module.exports = { a: 'dsads' };;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _bJs = cmd2amdLoadModule('./b.js');
+
+var _bJs2 = _interopRequireDefault(_bJs);
+
+module.exports = { a: 'ccc' };;
 
         return module == {} ? null : !module.exports ? exports : module.exports;
     })();
