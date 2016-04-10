@@ -1,2 +1,2 @@
-import 'core-js'
-export default {a:"cc"}
+require('./b.js');
+module.exports={a:'dsads'};

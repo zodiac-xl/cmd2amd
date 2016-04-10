@@ -10,8 +10,8 @@ let sourcePath = test + '/source';
 let rootPath = path.join(test, '../');
 let externals = {};
 let needPackRegExp = [];
-let modulePrefix = '/amda';
-
+let modulePrefix = '/dist/';
+let needWatch = true;
 
 let options = {
     distPath,
@@ -19,11 +19,17 @@ let options = {
     rootPath,
     externals,
     needPackRegExp,
-    modulePrefix
+    modulePrefix,
+    needWatch
 };
 
 gulp.task('b', function (cb) {
     cmd2amd(options);
     cb();
+
+});
+
+gulp.task('c', function (cb) {
+
 
 });

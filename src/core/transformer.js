@@ -10,6 +10,7 @@ import webpack      from 'gulp-webpack';
 import less         from 'gulp-less';
 import rename       from 'gulp-rename';
 import wrapper      from 'gulp-wrapper';
+import watch        from 'gulp-watch';
 
 
 let babel = require("babel-core");
@@ -31,17 +32,26 @@ let rootPath;
 let externals;
 let needPackRegExp;
 let modulePrefix;
-
+let template;
 let loadedMap = {};
+let needWatch = false;
+
+if (!template) {
+    ef.read(path.join(__dirname, './template.js'), function (contents) {
+        template = contents;
+    });
+}
 
 function doTransform(options) {
 
     distPath = options.distPath;
     sourcePath = options.sourcePath;
     rootPath = options.rootPath;
-    externals = options.externals ||{};
+    externals = options.externals || {};
     needPackRegExp = options.needPackRegExp || [];
     modulePrefix = options.modulePrefix || '';
+    needWatch = options.needWatch || false;
+
 
 
     del.sync(distPath);
@@ -63,15 +73,14 @@ function doTransform(options) {
 
 function babelAndAmd(distFilePath, distPath) {
 
-    let sourceFilePath = distFilePath
+
+    let sourceFilePath = distFilePath;
     let filePath = sourceFilePath;
     let ext = path.parse(filePath).ext;
 
     //判断是否需要解析
-    if (!filePath || loadedMap[filePath]) {
+    if (!sourceFilePath || loadedMap[sourceFilePath]) {
         return;
-    } else {
-        loadedMap[filePath] = true;
     }
 
 
@@ -82,7 +91,15 @@ function babelAndAmd(distFilePath, distPath) {
     } else if (ext == '.jsx') {
         filePath = filePath.replace('.jsx', '.js');
     }
+    if (needWatch && loadedMap[sourceFilePath] == undefined) {
+        watch(filePath, function () {
+            l(`rePack ${sourceFilePath}`);
+            loadedMap[sourceFilePath] = false;
+            babelAndAmd(distFilePath, distPath);
+        });
+    }
 
+    loadedMap[sourceFilePath] = true;
 
     let distFile = path.join(distPath, pathAbsolute(rootPath, filePath));
 
@@ -115,7 +132,7 @@ function babelAndAmd(distFilePath, distPath) {
             needPack = true;
             return true;
         }
-    })
+    });
 
     if (needPack) {
         gulp.src(sourceFilePath)
@@ -128,11 +145,11 @@ function babelAndAmd(distFilePath, distPath) {
                                 loader: 'babel?cacheDirectory&stage=0',
                                 exclude: /(node_modules\/[^(@myfe)]|min\.js)/
                             },
-                            { test: /\.css$/, loader: "style-loader!css-loader"  },
-                            { test: /\.less$/,loader: "style-loader!css-loader!less-loader"},
-                            { test: /\.json$/, loader: 'json' },
-                            { test: /\.jpe?g$|\.gif$|\.png|\.ico$/, loader: 'file?name=[name].[ext]' },
-                            { test: /\.eot$|\.ttf$|\.svg$|\.woff2?$/, loader: 'file?name=[name].[ext]' }
+                            {test: /\.css$/, loader: "style-loader!css-loader"},
+                            {test: /\.less$/, loader: "style-loader!css-loader!less-loader"},
+                            {test: /\.json$/, loader: 'json'},
+                            {test: /\.jpe?g$|\.gif$|\.png|\.ico$/, loader: 'file?name=[name].[ext]'},
+                            {test: /\.eot$|\.ttf$|\.svg$|\.woff2?$/, loader: 'file?name=[name].[ext]'}
                         ]
                     },
                     externals: externals,
@@ -160,93 +177,61 @@ function babelAndAmd(distFilePath, distPath) {
     }, function (err, result) {
         //result; // => { code, map, ast }
         if (err) {
-            console.log(err)
+            console.log(err);
             return;
         }
+        let code = result.code;
 
-        if (/define\.amd/.test(result.code)) {//本来就是amd或者umd 返回
-            ef.write(distFile, result.code, 'utf8');
+        if (/define\.amd/.test(code)) {//本来就是amd或者umd 返回
+            ef.write(distFile, code, 'utf8');
             return;
         }
-
 
 
         let modules = [];
-        let arrSource = result.code.split(/(\n|\r)/);
-        let arrRs = arrSource.map(function (item) {
-            let rs = item;
-            let defineP1 = concat(/require[(]('|")([^('|")]*)('|")[)]/);
-            let defineP2 = concat(/^(var|require)/);
-            let reference = null;
-            let modulePath = null;
+        let moduleIndex = 0;
+        if (/require/.test(code)) {//需要define
+            code = code.replace(/require\(/gim, 'cmd2amdLoadModule(');
+            let arr = code.split(/cmd2amdLoadModule[(]('|")([^('|")]*)('|")[)]/gim);
+            arr.forEach(function (item, i) {
+                if (i % 4 == 0 && (i + 2) <= arr.length) {
+                    let name = arr[i + 2];
+                    let obj = {};
 
-            if (defineP1.test(item) && defineP2.test(item)) { //解析依赖
-                let refAndModuleP = concat(/([\S]*)[\s]*=[\s]*/, /require[(]('|")([^('|")]*)('|")[)]/);//nameP  moudleP
-                let moduleP = concat(/require[(]('|")([^('|")]*)('|")[)]/);
 
-                if (refAndModuleP.test(item)) { //has reference
-                    reference = RegExp.$1;
-                    modulePath = RegExp.$3;
-                } else if (moduleP.test(item)) {
-                    modulePath = RegExp.$2;
-                }
+                    if (externals[name]) {
+                        obj[name] = {
+                            external: externals[name],
+                            index: null,
+                            path: null
+                        };
 
-                //过滤设置的不打包的window对象
-                if (externals[modulePath]) {
-                    rs = reference ? `var ${reference} =${externals[modulePath]}` : '';
-                    return rs;
+                    } else {
+                        let nodeModuleDir = rootPath;
+                        let fileDistPath = getModulePath(name, path.dirname(filePath), nodeModuleDir);
 
-                }
-                let fileDistPath = getModulePath(modulePath, path.dirname(filePath), rootPath)
-                //loop 循环解析依赖
-                modulePath && babelAndAmd(fileDistPath, distPath);
+                        babelAndAmd(fileDistPath, distPath);
 
-                modules.push({
-                    name: reference || 'amd_notDefined',
-                    path: pathAbsolute(rootPath, fileDistPath)
-                });
 
-                rs = '';
-            } else if (/module.exports/.test(item)) {//重构返回值
+                        obj[name] = {
+                            external: externals[name],
+                            index: moduleIndex,
+                            path: pathAbsolute(rootPath, fileDistPath)
+                        };
+                        moduleIndex++;
 
-                let moduleP = concat(/require[(]('|")([^('|")]*)('|")[)]/);
-
-                if (moduleP.test(item)) { //返回值为依赖
-                    //module.exports = require('./lib/React') or  module.exports.a = require('./lib/React')
-                    modulePath = RegExp.$2;
-                    reference = null;
-
-                    if (/^module.exports.([\w]+)/.test(item)) {
-                        reference = RegExp.$1;
                     }
 
 
-                    //过滤设置的不打包的window对象
-                    if (externals[modulePath]) {
-                        rs = reference ? `var ${reference} =${externals[modulePath]}` : '';
-                        return rs;
-                    }
-
-                    let fileDistPath = getModulePath(modulePath, path.dirname(filePath), rootPath)
-
-                    modules.push({
-                        name: reference || 'amd_notDefined',
-                        path: pathAbsolute(rootPath, fileDistPath)
-                    });
-
-                    //loop 循环解析依赖
-                    modulePath && babelAndAmd(fileDistPath, distPath);
+                    modules.push(obj);
                 }
-            }
-            return rs;
-        });
+            });
+        }
+        let amdRs = makeAMD(code, modules, modulePrefix, template);
 
-
-        //amd 返回值
-        arrRs.push(`\n return (!module.exports)?(exports['default']||exports):module.exports;\n`);
-
-        let amdRs = makeAMD(arrRs.join(''), modules,modulePrefix);
         ef.write(distFile, amdRs, 'utf8');
+
+
     });
 }
 

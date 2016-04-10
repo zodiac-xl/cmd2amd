@@ -1,8 +1,10 @@
 import path         from 'path'
 import pathExists   from 'path-exists';
 import fs           from 'fs'
+import ef           from 'easy-file'
 
 
+let template;
 
 
 function pathAbsolute(dirname, path) {
@@ -17,45 +19,62 @@ function pathAbsolute(dirname, path) {
 }
 
 
-function makeAMD(fnStr, modules,modulePrefix) {
+function makeAMD(fnStr, modules, modulePrefix, template) {
 
-
-    let rs = `define([modulesPath],function(modulesName){ \n var module = {}; \n var exports ={}; \n ${fnStr} \n })`;
+    let rs = template;
     let modulesPath = [];
     let modulesName = [];
 
     fnStr = fnStr || '';
 
-    modules && modules.forEach(function (module) {
-        modulesPath.push(module.path || '');
-        modulesName.push(module.name || '');
+    let browserModules = {};
+    modules && modules.forEach(function (module, i) {
+        var name = Object.keys(module)[0];
+        browserModules[name] = module[name]
+    });
+
+
+    modules && modules.forEach(function (module, i) {
+        let name = Object.keys(module)[0];
+        if (!module[name].path) {
+            return;
+        }
+        modulesPath.push(module[name].path);
+        modulesName.push(`ref_${i}`);
     });
 
     modulesPath = modulesPath.map(function (item) {
-        let rs = '"'+path.join(modulePrefix,item)+'"';
+        let rs = path.join(modulePrefix, item);
         if (path.parse(item).ext == '.less') {
-            rs = rs.replace('.less', '');
+            rs = rs.replace('.less', '.css');
             rs = 'css!' + rs;
         }
+        rs = '"' + rs + '"';
+
         return rs;
     });
     modulesPath.join(',');
     modulesName.join(',');
 
-    rs = rs.replace('modulesPath', modulesPath);
-    rs = rs.replace('modulesName', modulesName);
+    fnStr = fnStr.replace(/\$/g, 'a-b-c-d');
+    rs = rs.replace('dependsPlaceholder', modulesPath);
+    rs = rs.replace('refersPlaceholder', modulesName);
+    rs = rs.replace('cmd2amdModulesPlaceholder', JSON.stringify(browserModules));
+    rs = rs.replace('callbackPlaceholder', fnStr);
+    rs = rs.replace(/a-b-c-d/g, '$');
 
     return rs;
 }
 
 
-function getModulePath(filePath, relatePath, rootPath) {
+function getModulePath(filePath, relatePath, nodeModuleDir) {
 
 
     if (/([.]\/)/.test(filePath)) {//自定义模块
         filePath = path.resolve(relatePath, filePath);
+
     } else {
-        filePath = path.join(rootPath, 'node_modules', filePath);
+        filePath = path.join(nodeModuleDir, 'node_modules', filePath);
 
         let pk = path.join(filePath, 'package.json');
 
@@ -83,7 +102,10 @@ function getModulePath(filePath, relatePath, rootPath) {
     }
 
     if (!pathExists.sync(filePath)) {
+        console.log('relatePath' + relatePath);
+
         console.error('not fount' + filePath);
+
         filePath = null;
     }
 
