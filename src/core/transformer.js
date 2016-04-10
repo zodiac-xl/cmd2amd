@@ -119,11 +119,11 @@ function babelAndAmd(filePath, distPath) {
                 case 'add':
                 case 'change':
                     if (file.event == 'add') {
-                        let effectFile = moduleEffectMap[filePath];
-                        if (effectFile) {
+                        let effectFiles = moduleEffectMap[filePath];
+                        effectFiles && effectFiles.forEach(function (effectFile) {
                             loadedMap[effectFile] = false;
                             babelAndAmd(effectFile, distPath);
-                        }
+                        })
                     }
                     loadedMap[filePath] = false;
                     babelAndAmd(filePath, distPath);
@@ -246,7 +246,8 @@ function babelAndAmd(filePath, distPath) {
                         } else {
                             let fileDistPath = getModulePath(name, path.dirname(filePath), rootPath);
                             fileDistPath.forEach(function (item) {
-                                moduleEffectMap[item] = filePath;
+                                moduleEffectMap[item] = moduleEffectMap[item] || [];
+                                moduleEffectMap[item].push(filePath);
                                 babelAndAmd(item, distPath);
                             });
 
