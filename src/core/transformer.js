@@ -3,7 +3,6 @@ import del          from 'del'
 import fu           from 'fileutil';
 import concat       from 'concat-regexp';
 import ef           from 'easy-file'
-import _            from 'lodash';
 
 import gulp         from 'gulp'
 import webpack      from 'gulp-webpack';
@@ -51,7 +50,6 @@ function doTransform(options) {
     needPackRegExp = options.needPackRegExp || [];
     modulePrefix = options.modulePrefix || '';
     needWatch = options.needWatch || false;
-
 
 
     del.sync(distPath);
@@ -124,9 +122,7 @@ function babelAndAmd(distFilePath, distPath) {
     //for nodeModule
     let needPack = false;
 
-    if (!_.isArray(needPackRegExp)) {
-        needPackRegExp = [needPackRegExp];
-    }
+    needPackRegExp = [needPackRegExp];
     needPackRegExp.some(function (item) {
         if ((new RegExp(item)).test(sourceFilePath)) {
             needPack = true;
