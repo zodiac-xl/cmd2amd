@@ -1,1 +1,1 @@
-var a='aaaaa';
+import a from '../a'

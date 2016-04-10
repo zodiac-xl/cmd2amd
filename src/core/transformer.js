@@ -33,6 +33,7 @@ let needPackRegExp;
 let modulePrefix;
 let template;
 let loadedMap = {};
+let moduleEffectMap = {}; //文件增加的时候会影像 引用他的文件
 let needWatch = false;
 
 if (!template) {
@@ -58,24 +59,16 @@ function doTransform(options) {
     if (needWatch) {
         watch(sourcePath + '/**', function (file, e) {
             let filePath = file.path;
-            l(`file ${file.event}: ${filePath}`);
             switch (file.event) {
                 case 'add':
+                    l(`file ${file.event}: ${filePath}`);
+
                     try {
                         babelAndAmd(filePath, distPath);
                     } catch (e) {
                         l(file, 'file');
                         console.log(e);
                     }
-                    break;
-                case 'change':
-                    loadedMap[filePath] = false;
-                    babelAndAmd(filePath, distPath);
-                    break;
-                case 'unlink':
-                    delete loadedMap[filePath];
-                    let distFile = path.join(distPath, pathAbsolute(rootPath, filePath));
-                    del.sync(distFile);
                     break;
             }
         });
@@ -98,37 +91,60 @@ function doTransform(options) {
     })
 }
 
-function babelAndAmd(distFilePath, distPath) {
+function babelAndAmd(filePath, distPath) {
 
 
-    let sourceFilePath = distFilePath;
-    let filePath = sourceFilePath;
     let ext = path.parse(filePath).ext;
 
 
     //修正文件名后缀
     if (!ext) {
         filePath += '.js';
-        sourceFilePath += '.js';
-    } else if (ext == '.jsx') {
-        filePath = filePath.replace('.jsx', '.js');
     }
 
-    let distFile = path.join(distPath, pathAbsolute(rootPath, filePath));
+    let distFile = path.join(distPath, pathAbsolute(rootPath, filePath.replace('.jsx', '.js')));
 
 
     //判断是否需要解析
-    if (loadedMap[sourceFilePath]) {
+    if (loadedMap[filePath]) {
         return;
     }
 
 
-    loadedMap[sourceFilePath] = true;
+    if (needWatch && loadedMap[filePath] == undefined) {
+        watch(filePath, function (file, e) {
+            let filePath = file.path;
+            l(`file ${file.event}: ${filePath}`);
+            switch (file.event) {
+                case 'add':
+                case 'change':
+                    if (file.event == 'add') {
+                        let effectFile = moduleEffectMap[filePath];
+                        if (effectFile) {
+                            loadedMap[effectFile] = false;
+                            babelAndAmd(effectFile, distPath);
+                        }
+                    }
+                    loadedMap[filePath] = false;
+                    babelAndAmd(filePath, distPath);
+                    break;
+                case 'unlink':
+                    delete loadedMap[filePath];
+                    let distFile = path.join(distPath, pathAbsolute(rootPath, filePath));
+                    del.sync(distFile);
+                    break;
+            }
+        });
+
+    }
+
+
+    loadedMap[filePath] = true;
 
 
     //for less and css
     if (ext == '.less') {
-        gulp.src(sourceFilePath)
+        gulp.src(filePath)
             .pipe(less({}))
             .pipe(rename(function (path1) {
                 path1.extname = ".css";
@@ -136,7 +152,7 @@ function babelAndAmd(distFilePath, distPath) {
             .pipe(gulp.dest(path.dirname(distFile)));
         return;
     } else if (ext == '.css') {
-        ef.read(sourceFilePath, function (contents) {
+        ef.read(filePath, function (contents) {
             ef.write(distFile, contents, 'utf8');
         });
         return;
@@ -149,14 +165,14 @@ function babelAndAmd(distFilePath, distPath) {
 
     try {
         needPackRegExp.some(function (item) {
-            if ((new RegExp(item)).test(sourceFilePath)) {
+            if ((new RegExp(item)).test(filePath)) {
                 needPack = true;
                 return true;
             }
         });
 
         if (needPack) {
-            gulp.src(sourceFilePath)
+            gulp.src(filePath)
                 .pipe(webpack(
                     {
                         module: {
@@ -193,7 +209,7 @@ function babelAndAmd(distFilePath, distPath) {
 
 
         //for custom js
-        babel.transformFile(sourceFilePath, {
+        babel.transformFile(filePath, {
             stage: 0
         }, function (err, result) {
             //result; // => { code, map, ast }
@@ -228,15 +244,17 @@ function babelAndAmd(distFilePath, distPath) {
                             };
 
                         } else {
-                            let nodeModuleDir = rootPath;
-                            let fileDistPath = getModulePath(name, path.dirname(filePath), nodeModuleDir);
-                            fileDistPath && babelAndAmd(fileDistPath, distPath);
+                            let fileDistPath = getModulePath(name, path.dirname(filePath), rootPath);
+                            fileDistPath.forEach(function (item) {
+                                moduleEffectMap[item] = filePath;
+                                babelAndAmd(item, distPath);
+                            });
 
 
                             obj[name] = {
                                 external: externals[name],
                                 index: moduleIndex,
-                                path: pathAbsolute(rootPath, fileDistPath)
+                                path: pathAbsolute(rootPath, fileDistPath[0])
                             };
                             moduleIndex++;
 

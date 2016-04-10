@@ -67,14 +67,21 @@ function makeAMD(fnStr, modules, modulePrefix, template) {
 }
 
 
-function getModulePath(filePath, relatePath, nodeModuleDir) {
+function getModulePath(filePath, relatePath, rootPath) {
 
 
     if (/([.]\/)/.test(filePath)) {//自定义模块
         filePath = path.resolve(relatePath, filePath);
 
     } else {
-        filePath = path.join(nodeModuleDir, 'node_modules', filePath);
+        if (/node_modules/.test(relatePath)) {//如果引用者是node module中的文件 他引用的node module模块应该根据他的package来决定
+            let _thisRoot = relatePath.split('node_modules')[0];
+            if (pathExists.sync(path.join(_thisRoot, 'node_modules', filePath))) {//如果它自身带这个模块
+                rootPath = _thisRoot;
+            }
+        }
+
+        filePath = path.join(rootPath, 'node_modules', filePath);
 
         let pk = path.join(filePath, 'package.json');
 
@@ -84,6 +91,8 @@ function getModulePath(filePath, relatePath, nodeModuleDir) {
             if (main && pathExists.sync(path.join(filePath, main))) {
                 filePath = path.join(filePath, main);
             }
+        } else {
+
         }
     }
     let parseRs = path.parse(filePath);
@@ -93,19 +102,22 @@ function getModulePath(filePath, relatePath, nodeModuleDir) {
         ext = null;
     }
 
+
     if (!ext) {//如果没有后缀 有可能是文件下index.js 或者本身加上.js
-        if (pathExists.sync(path.join(filePath, 'index.js'))) {//
-            filePath = path.join(filePath, 'index.js');
+        let files = [path.join(filePath, 'index.js'), filePath + '.js'];
+        if (pathExists.sync(files[0])) {
+            filePath = files.splice(0, 1);
+        } else if (pathExists.sync(files[1])) {
+            filePath = files.splice(1, 1);
         } else {
-            filePath = filePath + '.js';
+            console.error('not fount:' + filePath);
+            filePath = files
         }
+    } else {
+        filePath = [filePath];
     }
 
-    if (!pathExists.sync(filePath)) {
-        console.error('not fount:' + filePath);
-    }
-
-    return filePath
+    return filePath;
 }
 
 
