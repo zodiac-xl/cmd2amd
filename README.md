@@ -1,19 +1,100 @@
 ## cmd2amd ![NPM version](https://img.shields.io/npm/v/cmd2amd.svg?style=flat)
 
 
+* transform cmd to amd
+* support watch
+* support custom webpack by options.needPackRegExp
+
 
 ### Installation
 ```bash
 $ npm install cmd2amd
 ```
 
+
 ### Example
-```js
-var cmd2amd = require('cmd2amd');
-```
+
+check test file  and task b in gulpfile.babel 
+
+	//config
+	import cmd2amd                      from 'cmd2amd'
+
+	let test = path.join(__dirname, './test');
+	let distPath = test + '/dist';
+	let sourcePath = test + '/source';
+	let rootPath = path.join(test, '../');
+	let externals = {};
+	let needPackRegExp = [
+	    'node_module'
+	];
+	let modulePrefix = '/dist/';
+	let needWatch = true;
+	cmd2amd(options);
+
+source:
+
+a.js
+
+	import b form './b';
+	import c form 'c';
+	export default {b:b,c:c};
+
+b.js
+
+	export default {b:"cc"};
+
+dist:
+
+a.js equal
+
+	define([modulePrefix+'b.js', modulePrefix+rootPath+'node_module/c/index.js'],function(b,c){
+		return {b:b,c:c}
+	})
+	
+b.js equal	
+
+	define([],function(){
+		return {b:"cc"};
+	})	
+
+c equal  webpack with config.output.libraryTarget = 'amd'
+
+
 
 ### API
 check this file: `index.js`
+
+
+### options
+
+* sourcePath (type:String)
+
+	entry dir
+	
+* distPath (type:String)  
+	
+	dist dir
+	
+* rootPath (type:String)
+	
+	root equal path.dirname(package.json)
+	
+* externals (type:Object)
+	
+	equal webpack externals
+	
+* needPackRegExp (type:Array)
+	
+	test true will use webpack to pack instead transform file by file 
+	
+* modulePrefix (type:String)
+	
+	define depends prefix 
+	
+* needWatch (type:Boolean)
+
+	equal webpack watch
+	
 
 ### Contributing
 - Fork this Repo first
