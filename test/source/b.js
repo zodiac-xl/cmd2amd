@@ -1,1 +1,3 @@
-export default {a:"c"}
+export default {a: "c"}
+
+

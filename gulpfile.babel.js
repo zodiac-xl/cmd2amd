@@ -1,5 +1,5 @@
 import gulp                         from 'gulp'
-import cmd2amd                      from './lib/index.js'
+import cmd2amd                      from './src/index.js'
 import path                         from 'path'
 
 
