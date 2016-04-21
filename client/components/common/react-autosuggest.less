@@ -1,0 +1,71 @@
+.react-autosuggest {
+  @font-size: 16px;
+  @border-color: #aaa;
+  @border-radius: 4px;
+
+  position: relative;
+
+  input {
+    width: 22em;
+    height: 30px;
+    padding: 0 10px;
+    font-size: @font-size;
+    border: 1px solid @border-color;
+    border-radius: @border-radius;
+
+    &[aria-expanded="true"] {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__suggestions {
+    position: absolute;
+    top: 30px;
+    width: 240px;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    border: 1px solid @border-color;
+    background-color: #fff;
+    font-size: @font-size;
+    border-bottom-left-radius: @border-radius;
+    border-bottom-right-radius: @border-radius;
+    z-index: 2;
+
+    &-section {
+      &:first-child {
+        .react-autosuggest__suggestions-section-name {
+          border-top: 0;
+        }
+      }
+
+      &-name {
+        padding: 10px 0 0 10px;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #777;
+        border-top: 1px dashed #ccc;
+      }
+
+      &-suggestions {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+      }
+    }
+  }
+
+  &__suggestion {
+    cursor: pointer;
+    padding: 5px 10px;
+
+    &--focused {
+      background-color: #ddd;
+    }
+  }
+}

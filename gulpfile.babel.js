@@ -5,15 +5,20 @@ import path                         from 'path'
 
 //config
 let test = path.join(__dirname, './test');
-let distPath = test + '/dist';
+let distPath = test + '/dist/amd';
 let sourcePath = test + '/source';
 let rootPath = path.join(test, '../');
-let externals = {};
+let externals = {
+    "jquery": "jQuery",
+    "react": "React",
+    "react-dom": "ReactDOM"
+};
 let needPackRegExp = [
-    'b.js'
+    'node_modules',
+    'side-bar'
 ];
-let modulePrefix = '/dist/';
-let needWatch = true;
+let moduleRoot =  path.join(__dirname, './test/dist');
+let needWatch = false;
 
 let options = {
     distPath,
@@ -21,8 +26,8 @@ let options = {
     rootPath,
     externals,
     needPackRegExp,
-    modulePrefix,
-    needWatch
+    needWatch,
+    moduleRoot
 };
 
 gulp.task('b', function (cb) {

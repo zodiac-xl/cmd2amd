@@ -1,0 +1,52 @@
+.navbar-static-top {
+  height: 60px;
+  margin-bottom: 0;
+  border-color: transparent;
+  background-color: #E74C3C;
+}
+.navbar-static-top .navbar-brand {
+  height: 60px;
+  line-height: 30px;
+  font-size: 20px;
+  text-align: center;
+  background-color: #E74C3C;
+  color: white;
+}
+.navbar-static-top .navbar-brand:hover {
+  background-color: #E74C3C;
+  color: white;
+}
+.navbar-static-top .navbar-brand .logo-img {
+  float: left;
+  margin-top: 3px;
+  margin-right: 10px;
+  margin-left: 12px;
+  width: 24px;
+  background-image: url('/images/logo.jpeg');
+  background-size: cover;
+}
+.navbar-static-top .navbar-brand span {
+  display: inline-block;
+  height: 24px;
+}
+.navbar-static-top .nav-link {
+  display: block;
+  padding: 10px 15px;
+  line-height: 40px;
+  min-width: 60px;
+  text-align: center;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.navbar-static-top .nav-link:hover,
+.navbar-static-top .nav-link:focus {
+  background-color: #921e12;
+}
+.navbar-static-top .nav-link .popover {
+  color: black;
+  text-align: center;
+}
+.navbar-static-top .pull-left .nav-link {
+  font-size: 18px;
+}

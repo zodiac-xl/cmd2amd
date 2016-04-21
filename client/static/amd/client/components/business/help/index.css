@@ -1,0 +1,27 @@
+.help-page .wrap-nav {
+  border: 1px solid #cccccc;
+}
+.help-page .wrap-nav .dropdown button {
+  padding: 12px;
+  border: 0;
+  color: #DE5858;
+}
+.help-page .wrap-nav .dropdown button:focus {
+  outline: none;
+}
+.help-page .wrap-nav .dropdown.active button {
+  color: white;
+}
+.help-page .wrap-th-create {
+  display: flex;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -ms-flex-align: center;
+  /* IE 10 */
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  align-items: center;
+}
+.help-page .wrap-th-create span {
+  flex: 1;
+}

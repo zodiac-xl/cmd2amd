@@ -1,0 +1,54 @@
+@import "./variables";
+.navbar-static-top {
+    height: @header-height;
+    margin-bottom: 0;
+    border-color: transparent;
+    background-color: @theme-color;
+    .navbar-brand {
+        height: @header-height;
+        line-height: @header-height/2;
+        font-size: 20px;
+        text-align: center;
+        background-color: @theme-color;
+        color: white;
+        &:hover {
+            background-color: @theme-color;
+            color: white;
+        }
+        .logo-img {
+            float: left;
+            margin-top: 3px;
+            margin-right: 10px;
+            margin-left: 12px;
+            width: 24px;
+            background-image: url(@logoUrl);
+            background-size: cover;
+        }
+        span {
+            display: inline-block;
+            height: 24px;
+        }
+    }
+    .nav-link {
+        display: block;
+        padding: 10px 15px;
+        line-height: @header-height*2/3;
+        min-width: @header-height;
+        text-align: center;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        &:hover, &:focus {
+            background-color: darken(@theme-color, 25%);
+        }
+        .popover {
+            color: black;
+            text-align: center;
+        }
+    }
+    .pull-left {
+        .nav-link {
+            font-size: 18px;
+        }
+    }
+}

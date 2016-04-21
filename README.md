@@ -4,6 +4,7 @@
 * transform cmd to amd
 * support watch
 * support custom webpack by options.needPackRegExp
+* support babel6 (if want babel5  use cmd2amd@2.*.*)
 
 
 ### Installation
@@ -12,7 +13,16 @@ $ npm install cmd2amd
 ```
 
 
+###Test
+
+    run npm i; 
+    gulp b;
+    
+>js in source dir convert to dist dir
+
 ### Example
+
+
 
 check test file  and task b in gulpfile.babel 
 
@@ -87,9 +97,9 @@ check this file: `index.js`
 	
 	test true will use webpack to pack instead transform file by file 
 	
-* modulePrefix (type:String)
+* moduleRoot (type:String)
 	
-	define depends prefix 
+	moduleName = path.resolve(moduleRoot,distfilePath); 
 	
 * needWatch (type:Boolean)
 

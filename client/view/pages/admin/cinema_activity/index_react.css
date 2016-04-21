@@ -1,0 +1,330 @@
+.react-autosuggest {
+  position: relative;
+}
+.react-autosuggest input {
+  width: 22em;
+  height: 30px;
+  padding: 0 10px;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+.react-autosuggest input[aria-expanded="true"] {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.react-autosuggest input:focus {
+  outline: none;
+}
+.react-autosuggest__suggestions {
+  position: absolute;
+  top: 30px;
+  width: 240px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  border: 1px solid #aaa;
+  background-color: #fff;
+  font-size: 16px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  z-index: 2;
+}
+.react-autosuggest__suggestions-section:first-child .react-autosuggest__suggestions-section-name {
+  border-top: 0;
+}
+.react-autosuggest__suggestions-section-name {
+  padding: 10px 0 0 10px;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #777;
+  border-top: 1px dashed #ccc;
+}
+.react-autosuggest__suggestions-section-suggestions {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+.react-autosuggest__suggestion {
+  cursor: pointer;
+  padding: 5px 10px;
+}
+.react-autosuggest__suggestion--focused {
+  background-color: #ddd;
+}
+.nav-tabs > li {
+  pointer-events: initial !important;
+}
+.navbar-static-top {
+  height: 60px;
+  margin-bottom: 0;
+  border-color: transparent;
+  background-color: #E74C3C;
+}
+.navbar-static-top .navbar-brand {
+  height: 60px;
+  line-height: 30px;
+  font-size: 20px;
+  text-align: center;
+  background-color: #E74C3C;
+  color: white;
+}
+.navbar-static-top .navbar-brand:hover {
+  background-color: #E74C3C;
+  color: white;
+}
+.navbar-static-top .navbar-brand .logo-img {
+  float: left;
+  margin-top: 3px;
+  margin-right: 10px;
+  margin-left: 12px;
+  width: 24px;
+  background-image: url('/images/logo.jpeg');
+  background-size: cover;
+}
+.navbar-static-top .navbar-brand span {
+  display: inline-block;
+  height: 24px;
+}
+.navbar-static-top .nav-link {
+  display: block;
+  padding: 10px 15px;
+  line-height: 40px;
+  min-width: 60px;
+  text-align: center;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.navbar-static-top .nav-link:hover,
+.navbar-static-top .nav-link:focus {
+  background-color: #921e12;
+}
+.navbar-static-top .nav-link .popover {
+  color: black;
+  text-align: center;
+}
+.navbar-static-top .pull-left .nav-link {
+  font-size: 18px;
+}
+.common-footer {
+  position: absolute;
+  left: 180px;
+  bottom: 0;
+  right: 0;
+  padding: 0 10px;
+  background-color: #efefef;
+  height: 40px;
+  line-height: 40px;
+}
+.slide-menu {
+  -webkit-user-select: none;
+  margin-bottom: 20px;
+}
+.slide-menu ul {
+  padding: 0;
+  -webkit-transition: height .3s;
+}
+.slide-menu li {
+  background-color: #34495E;
+  list-style-type: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+.slide-menu li a {
+  display: block;
+  text-decoration: none;
+  color: #e1ffff;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 36px;
+  padding-left: 20px;
+}
+.slide-menu li a:hover {
+  color: #95A5A6;
+}
+.slide-menu li a.selected {
+  color: #3361a4;
+  background-color: #ffffff;
+}
+.slide-menu li a .has-child-icon {
+  float: right;
+  right: 20px;
+  top: 12px;
+  font-size: 12px;
+}
+.slide-menu li.selected > a {
+  color: #E74C3C;
+}
+.slide-menu li.opened a .has-child-icon {
+  transform: rotate(90deg);
+}
+.slide-menu > ul ul {
+  border-bottom: 1px solid black;
+}
+.slide-menu > ul ul li {
+  background-color: #2C3E50;
+}
+.slide-menu > ul ul a {
+  padding-left: 40px;
+}
+.side-bar {
+  width: 180px;
+  background-color: #34495E;
+}
+.side-bar .btn-group {
+  width: 100%;
+}
+.side-bar .btn-group .btn-primary {
+  width: 100%;
+  height: 36px;
+  background-color: #2C3E50;
+  border-color: #34495E;
+}
+.side-bar .btn-group .dropdown-menu {
+  width: 100%;
+  background-color: #eee;
+}
+.side-bar .slide-menu {
+  width: 180px;
+  background-color: #34495E;
+  overflow: scroll;
+  position: absolute;
+  top: 60px;
+  bottom: 0;
+  margin-bottom: 0;
+}
+.side-bar .slide-menu::-webkit-scrollbar-track {
+  background-color: initial;
+  -webkit-border-radius: initial;
+  border-radius: initial;
+}
+.side-bar .slide-menu::-webkit-scrollbar {
+  width: 0;
+  height: initial;
+}
+.side-bar .slide-menu::-webkit-scrollbar-thumb {
+  background-color: initial;
+  -webkit-border-radius: initial;
+  border-radius: initial;
+  outline: initial;
+  outline-offset: initial;
+  border: initial;
+}
+.side-bar .slide-menu::-webkit-scrollbar-thumb:hover {
+  background-color: initial;
+  -webkit-border-radius: initial;
+  border-radius: initial;
+}
+.miaoLabel {
+  position: fixed;
+  right: 5%;
+  bottom: 10%;
+  cursor: pointer;
+  z-index: 9999;
+}
+.drop-left-top .dropdown-menu {
+  bottom: 100%;
+  left: auto;
+  right: 100%;
+  top: auto;
+  background: transparent;
+  border: 0;
+  box-shadow: 0 6px 12px rgba(255, 255, 255, 0.175);
+}
+.funny-button {
+  /* text */
+  text-decoration: none;
+  font: 24px/1em 'Droid Sans', sans-serif;
+  font-weight: bold;
+  text-shadow: rgba(255, 255, 255, 0.5) 0 1px 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  /* layout */
+  padding: .5em .6em .4em .6em;
+  margin: .5em;
+  display: inline-block;
+  position: relative;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+  /* effects */
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  -webkit-transition: background 0.2s ease-in-out;
+  -moz-transition: background 0.2s ease-in-out;
+  transition: background 0.2s ease-in-out;
+  /* color */
+  color: #666666 !important;
+  background-color: #bfbfbf;
+  -webkit-box-shadow: inset rgba(255, 254, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.15) 0 -0.1em 0.3em, /* inner shadow */ #999999 0 0.1em 3px, #737373 0 0.3em 1px, /* color border */ rgba(0, 0, 0, 0.2) 0 0.5em 5px;
+  /* drop shadow */
+  -moz-box-shadow: inset rgba(255, 254, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.15) 0 -0.1em 0.3em, /* inner shadow */ #999999 0 0.1em 3px, #737373 0 0.3em 1px, /* color border */ rgba(0, 0, 0, 0.2) 0 0.5em 5px;
+  /* drop shadow */
+  box-shadow: inset rgba(255, 254, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.15) 0 -0.1em 0.3em, /* inner shadow */ #999999 0 0.1em 3px, #737373 0 0.3em 1px, /* color border */ rgba(0, 0, 0, 0.2) 0 0.5em 5px;
+  /* drop shadow */
+}
+.funny-button:before {
+  font: 1.2em/0 sans-serif;
+  content: attr(data-icon);
+  /* gets the icon value from the custom data attribute and puts it infront of the button label */
+  margin-right: 6px;
+}
+.funny-button:hover {
+  background-color: #d4d4d4;
+}
+.funny-button:active {
+  -webkit-box-shadow: inset rgba(255, 255, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.2) 0 -0.1em 0.3em, /* inner shadow */ rgba(0, 0, 0, 0.4) 0 0.1em 1px, /* border */ rgba(0, 0, 0, 0.2) 0 0.2em 6px;
+  /* drop shadow */
+  -moz-box-shadow: inset rgba(255, 255, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.2) 0 -0.1em 0.3em, /* inner shadow */ rgba(0, 0, 0, 0.4) 0 0.1em 1px, /* border */ rgba(0, 0, 0, 0.2) 0 0.2em 6px;
+  /* drop shadow */
+  box-shadow: inset rgba(255, 255, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.2) 0 -0.1em 0.3em, /* inner shadow */ rgba(0, 0, 0, 0.4) 0 0.1em 1px, /* border */ rgba(0, 0, 0, 0.2) 0 0.2em 6px;
+  /* drop shadow */
+  -webkit-transform: translateY(0.2em);
+  -moz-transform: translateY(0.2em);
+  transform: translateY(0.2em);
+}
+.funny-button:focus {
+  outline: none;
+  color: rgba(254, 255, 255, 0.9) !important;
+  text-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px;
+}
+.funny-button.green {
+  color: #508217 !important;
+  background-color: #9ee052;
+  -webkit-box-shadow: inset rgba(255, 254, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.15) 0 -0.1em 0.3em, /* inner shadow */ #6bad1f 0 0.1em 3px, #508217 0 0.3em 1px, /* color border */ rgba(0, 0, 0, 0.2) 0 0.5em 5px;
+  /* drop shadow */
+  -moz-box-shadow: inset rgba(255, 254, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.15) 0 -0.1em 0.3em, /* inner shadow */ #6bad1f 0 0.1em 3px, #508217 0 0.3em 1px, /* color border */ rgba(0, 0, 0, 0.2) 0 0.5em 5px;
+  /* drop shadow */
+  box-shadow: inset rgba(255, 254, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.15) 0 -0.1em 0.3em, /* inner shadow */ #6bad1f 0 0.1em 3px, #508217 0 0.3em 1px, /* color border */ rgba(0, 0, 0, 0.2) 0 0.5em 5px;
+  /* drop shadow */
+}
+.funny-button.green:hover {
+  background-color: #c2ec93;
+}
+.my-page-content {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  left: 180px;
+  bottom: 50px;
+  padding-top: 40px;
+  overflow: auto;
+  color: #777;
+}
+.my-page-content > div {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.my-page-content .my-page-header {
+  padding-left: 0;
+  padding-right: 0;
+}
+.page-title {
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+/*# sourceMappingURL=index_react.css.map*/

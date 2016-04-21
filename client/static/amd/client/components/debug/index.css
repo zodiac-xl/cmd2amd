@@ -1,0 +1,87 @@
+.miaoLabel {
+  position: fixed;
+  right: 5%;
+  bottom: 10%;
+  cursor: pointer;
+  z-index: 9999;
+}
+.drop-left-top .dropdown-menu {
+  bottom: 100%;
+  left: auto;
+  right: 100%;
+  top: auto;
+  background: transparent;
+  border: 0;
+  box-shadow: 0 6px 12px rgba(255, 255, 255, 0.175);
+}
+.funny-button {
+  /* text */
+  text-decoration: none;
+  font: 24px/1em 'Droid Sans', sans-serif;
+  font-weight: bold;
+  text-shadow: rgba(255, 255, 255, 0.5) 0 1px 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  /* layout */
+  padding: .5em .6em .4em .6em;
+  margin: .5em;
+  display: inline-block;
+  position: relative;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+  /* effects */
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  -webkit-transition: background 0.2s ease-in-out;
+  -moz-transition: background 0.2s ease-in-out;
+  transition: background 0.2s ease-in-out;
+  /* color */
+  color: #666666 !important;
+  background-color: #bfbfbf;
+  -webkit-box-shadow: inset rgba(255, 254, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.15) 0 -0.1em 0.3em, /* inner shadow */ #999999 0 0.1em 3px, #737373 0 0.3em 1px, /* color border */ rgba(0, 0, 0, 0.2) 0 0.5em 5px;
+  /* drop shadow */
+  -moz-box-shadow: inset rgba(255, 254, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.15) 0 -0.1em 0.3em, /* inner shadow */ #999999 0 0.1em 3px, #737373 0 0.3em 1px, /* color border */ rgba(0, 0, 0, 0.2) 0 0.5em 5px;
+  /* drop shadow */
+  box-shadow: inset rgba(255, 254, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.15) 0 -0.1em 0.3em, /* inner shadow */ #999999 0 0.1em 3px, #737373 0 0.3em 1px, /* color border */ rgba(0, 0, 0, 0.2) 0 0.5em 5px;
+  /* drop shadow */
+}
+.funny-button:before {
+  font: 1.2em/0 sans-serif;
+  content: attr(data-icon);
+  /* gets the icon value from the custom data attribute and puts it infront of the button label */
+  margin-right: 6px;
+}
+.funny-button:hover {
+  background-color: #d4d4d4;
+}
+.funny-button:active {
+  -webkit-box-shadow: inset rgba(255, 255, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.2) 0 -0.1em 0.3em, /* inner shadow */ rgba(0, 0, 0, 0.4) 0 0.1em 1px, /* border */ rgba(0, 0, 0, 0.2) 0 0.2em 6px;
+  /* drop shadow */
+  -moz-box-shadow: inset rgba(255, 255, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.2) 0 -0.1em 0.3em, /* inner shadow */ rgba(0, 0, 0, 0.4) 0 0.1em 1px, /* border */ rgba(0, 0, 0, 0.2) 0 0.2em 6px;
+  /* drop shadow */
+  box-shadow: inset rgba(255, 255, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.2) 0 -0.1em 0.3em, /* inner shadow */ rgba(0, 0, 0, 0.4) 0 0.1em 1px, /* border */ rgba(0, 0, 0, 0.2) 0 0.2em 6px;
+  /* drop shadow */
+  -webkit-transform: translateY(0.2em);
+  -moz-transform: translateY(0.2em);
+  transform: translateY(0.2em);
+}
+.funny-button:focus {
+  outline: none;
+  color: rgba(254, 255, 255, 0.9) !important;
+  text-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px;
+}
+.funny-button.green {
+  color: #508217 !important;
+  background-color: #9ee052;
+  -webkit-box-shadow: inset rgba(255, 254, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.15) 0 -0.1em 0.3em, /* inner shadow */ #6bad1f 0 0.1em 3px, #508217 0 0.3em 1px, /* color border */ rgba(0, 0, 0, 0.2) 0 0.5em 5px;
+  /* drop shadow */
+  -moz-box-shadow: inset rgba(255, 254, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.15) 0 -0.1em 0.3em, /* inner shadow */ #6bad1f 0 0.1em 3px, #508217 0 0.3em 1px, /* color border */ rgba(0, 0, 0, 0.2) 0 0.5em 5px;
+  /* drop shadow */
+  box-shadow: inset rgba(255, 254, 255, 0.6) 0 0.3em 0.3em, inset rgba(0, 0, 0, 0.15) 0 -0.1em 0.3em, /* inner shadow */ #6bad1f 0 0.1em 3px, #508217 0 0.3em 1px, /* color border */ rgba(0, 0, 0, 0.2) 0 0.5em 5px;
+  /* drop shadow */
+}
+.funny-button.green:hover {
+  background-color: #c2ec93;
+}

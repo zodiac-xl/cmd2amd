@@ -15,7 +15,7 @@ import pathExists   from 'path-exists';
 
 let babel = require("babel-core");
 
-import {pathAbsolute,makeAMD,getModulePath} from './util';
+import {pathAbsolute,getModulePath} from './util';
 
 
 let l = function (file) {
@@ -32,16 +32,10 @@ let rootPath;
 let externals;
 let needPackRegExp;
 let modulePrefix;
-let template;
+let moduleRoot;
 let loadedMap = {};
 let moduleEffectMap = {}; //文件增加的时候会影像 引用他的文件
 let needWatch = false;
-
-if (!template) {
-    ef.read(path.join(__dirname, './template.js'), function (contents) {
-        template = contents;
-    });
-}
 
 
 let callFirst = false;
@@ -60,6 +54,7 @@ function doTransform(options) {
     externals = options.externals || {};
     needPackRegExp = options.needPackRegExp || [];
     modulePrefix = options.modulePrefix || '';
+    moduleRoot = options.moduleRoot || '';
     needWatch = options.needWatch || false;
 
 
@@ -84,12 +79,14 @@ function doTransform(options) {
 
     }
 
+
     let files = fu.list(sourcePath, {
         excludeDirectory: true, //不包含文件夹
         matchFunction: function (item) {
             return item.name.match(/(.)(jsx|js)/);
         }
     });
+
     files.forEach(function (file) {
         try {
             babelAndAmd(file, distPath);
@@ -102,11 +99,8 @@ function doTransform(options) {
     })
 }
 
-function babelAndAmd(filePath, distPath) {
-
+function getDistFile(filePath) {
     let ext = path.parse(filePath).ext;
-
-
     //修正文件名后缀
     if (!ext) {
         if (pathExists.sync(filePath + '.jsx')) {
@@ -115,14 +109,20 @@ function babelAndAmd(filePath, distPath) {
             filePath += '.js'
         }
     }
-
     let distFile = pathAbsolute(rootPath, filePath.replace('.jsx', '.js'));
     if (distFile) {
         distFile = path.join(distPath, distFile);
-    } else {
+    }
+    return distFile
+}
+
+function babelAndAmd(filePath, distPath) {
+    let ext = path.parse(filePath).ext;
+
+    let distFile = getDistFile(filePath);
+    if (!distFile) {
         return;
     }
-
 
     //判断是否需要解析
     if (loadedMap[filePath]) {
@@ -184,9 +184,7 @@ function babelAndAmd(filePath, distPath) {
     if (!pathExists.sync(filePath)) {
         return;
     }
-
     try {
-
 
 
         needPackRegExp.some(function (item) {
@@ -205,6 +203,12 @@ function babelAndAmd(filePath, distPath) {
                                 {
                                     test: /\.js/,
                                     loader: 'babel',
+                                    query: {
+                                        presets: ['es2015', 'stage-0', 'react'],
+                                        plugins: [
+                                            ["transform-decorators-legacy"]
+                                        ]
+                                    },
                                     exclude: /(node_modules\/[^(@myfe)]|min\.js)/
                                 },
                                 {test: /\.css$/, loader: "style-loader!css-loader"},
@@ -233,29 +237,32 @@ function babelAndAmd(filePath, distPath) {
         }
 
 
-
         //for custom js
         babel.transformFile(filePath, {
             "presets": [
-                "react",
                 "es2015",
-                "stage-0",
-                "stage-1",
-                "stage-2",
-                "stage-3"
+                "react",
+                "stage-0"
             ],
-            plugins: ["add-module-exports","transform-decorators-legacy", "transform-es2015-modules-amd"],
+            plugins: ["add-module-exports", "transform-decorators-legacy", "transform-es2015-modules-amd"],
             resolveModuleSource: function (source, filename) {
-                let moduleName = null;
-                let realPaths = getModulePath(source, filename, rootPath);
-                realPaths.forEach(function (item) {
-                    moduleEffectMap[item] = moduleEffectMap[item] || [];
-                    moduleEffectMap[item].push(filePath);
-                    babelAndAmd(item, distPath);
-                });
-
-
-                moduleName = path.relative(path.dirname(filename), realPaths[0]).replace(/\.(js|jsx)$/, '');
+                let moduleName = '';
+                if (externals[source]) {
+                    moduleName = source;
+                } else {
+                    let realPaths = getModulePath(source, filename, rootPath);
+                    realPaths.forEach(function (item) {
+                        moduleEffectMap[item] = moduleEffectMap[item] || [];
+                        moduleEffectMap[item].push(filePath);
+                        babelAndAmd(item, distPath);
+                        loadedMap[item] = true;
+                    });
+                    moduleName = pathAbsolute(moduleRoot, getDistFile(realPaths[0]));
+                    if (/\.(css|less)$/.test(moduleName)) {
+                        moduleName = moduleName.replace(/\.less$/, '.css');
+                        moduleName = 'css!' + moduleName;
+                    }
+                }
                 return moduleName;
             },
         }, function (err, result) {
@@ -266,6 +273,7 @@ function babelAndAmd(filePath, distPath) {
                 return;
             }
             let code = result.code;
+
             ef.write(distFile, code, 'utf8');
         });
     } catch (e) {

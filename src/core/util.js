@@ -4,7 +4,6 @@ import fs           from 'fs'
 import ef           from 'easy-file'
 
 
-let template;
 
 
 function pathAbsolute(dirname, path) {
@@ -18,53 +17,6 @@ function pathAbsolute(dirname, path) {
     return result;
 }
 
-
-function makeAMD(fnStr, modules, modulePrefix, template) {
-
-    let rs = template;
-    let modulesPath = [];
-    let modulesName = [];
-
-    fnStr = fnStr || '';
-
-    let browserModules = {};
-    modules && modules.forEach(function (module, i) {
-        var name = Object.keys(module)[0];
-        browserModules[name] = module[name]
-    });
-
-
-    modules && modules.forEach(function (module, i) {
-        let name = Object.keys(module)[0];
-        if (!module[name].path) {
-            return;
-        }
-        modulesPath.push(module[name].path);
-        modulesName.push(`ref_${i}`);
-    });
-
-    modulesPath = modulesPath.map(function (item) {
-        let rs = path.join(modulePrefix, item);
-        if (path.parse(item).ext == '.less') {
-            rs = rs.replace('.less', '.css');
-            rs = 'css!' + rs;
-        }
-        rs = '"' + rs + '"';
-
-        return rs;
-    });
-    modulesPath.join(',');
-    modulesName.join(',');
-
-    fnStr = fnStr.replace(/\$/g, 'a-b-c-d');
-    rs = rs.replace('dependsPlaceholder', modulesPath);
-    rs = rs.replace('refersPlaceholder', modulesName);
-    rs = rs.replace('cmd2amdModulesPlaceholder', JSON.stringify(browserModules));
-    rs = rs.replace('callbackPlaceholder', fnStr);
-    rs = rs.replace(/a-b-c-d/g, '$');
-
-    return rs;
-}
 
 
 function getModulePath(source, relatePath, rootPath) {
@@ -133,6 +85,5 @@ function getModulePath(source, relatePath, rootPath) {
 
 module.exports = {
     pathAbsolute: pathAbsolute,
-    makeAMD: makeAMD,
     getModulePath: getModulePath
 }
