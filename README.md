@@ -4,7 +4,7 @@
 * transform cmd to amd
 * support watch
 * support custom webpack by options.needPackRegExp
-* support babel6 (if want babel5  use cmd2amd@2.*.*)
+* support babel6 (if want babel5  use cmd2amd@1.2.*)
 
 
 ### Installation
