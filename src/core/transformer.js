@@ -36,7 +36,7 @@ let moduleRoot;
 let loadedMap = {};
 let moduleEffectMap = {}; //文件增加的时候会影像 引用他的文件
 let needWatch = false;
-
+let sourceMaps = false;
 
 let callFirst = false;
 function callFirstTime(fn) {
@@ -56,6 +56,7 @@ function doTransform(options) {
     modulePrefix = options.modulePrefix || '';
     moduleRoot = options.moduleRoot || '';
     needWatch = options.needWatch || false;
+    sourceMaps = options.sourceMaps || false;
 
 
     del.sync(distPath);
@@ -239,6 +240,7 @@ function babelAndAmd(filePath, distPath) {
 
         //for custom js
         babel.transformFile(filePath, {
+            sourceMaps: sourceMaps,
             "presets": [
                 "es2015",
                 "react",
@@ -274,7 +276,12 @@ function babelAndAmd(filePath, distPath) {
             }
             let code = result.code;
 
+            if(sourceMaps){
+                code += `\n //# sourceMappingURL=${path.basename(distFile)}.map`;
+                ef.write(distFile + '.map', JSON.stringify(result.map), 'utf8');
+            }
             ef.write(distFile, code, 'utf8');
+
         });
     } catch (e) {
         l(filePath);
