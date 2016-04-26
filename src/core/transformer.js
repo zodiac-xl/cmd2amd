@@ -21,7 +21,7 @@ import {pathAbsolute,getModulePath} from './util';
 let l = function (file) {
 
     console.log('------------------s');
-    console.log('cmd2amd failed：\n' + file);
+    console.log(file+'\n');
     console.log('------------------e');
 };
 
