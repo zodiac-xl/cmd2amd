@@ -1,6 +1,6 @@
 {
   "name": "cmd2amd",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "",
   "main": "lib/index.js",
   "repository": {
@@ -47,9 +47,7 @@
     "gulp-watch": "^4.3.5",
     "gulp-wrapper": "^1.0.0",
     "path-exists": "^2.1.0",
-    "webpack-stream": "^3.1.0"
-  },
-  "devDependencies": {
+    "webpack-stream": "^3.1.0",
     "babel-plugin-add-module-exports": "^0.1.2",
     "babel-plugin-external-helpers": "^6.5.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
