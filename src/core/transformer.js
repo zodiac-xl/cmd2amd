@@ -230,7 +230,7 @@ function babelAndAmd(filePath, distPath) {
                 ))
                 .pipe(intercept(function(file){
                     var contents = file.contents.toString();
-                    contents.replace('sourceMappingURL=','');
+                    contents = contents.replace(/sourceMappingURL=/g,'');
                     file.contents = new Buffer(contents);
                     return file;
                 }))
