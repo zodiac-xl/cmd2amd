@@ -9,6 +9,8 @@ import webpack      from 'webpack-stream';
 import less         from 'gulp-less';
 import rename       from 'gulp-rename';
 import wrapper      from 'gulp-wrapper';
+import intercept    from 'gulp-intercept';
+
 import watch        from 'gulp-watch';
 import pathExists   from 'path-exists';
 
@@ -226,6 +228,12 @@ function babelAndAmd(filePath, distPath) {
                         }
                     }
                 ))
+                .pipe(intercept(function(file){
+                    var contents = file.contents.toString();
+                    contents.replace('sourceMappingURL=','');
+                    file.contents = new Buffer(contents);
+                    return file;
+                }))
                 .pipe(wrapper(
                     {
                         header: 'define(function(){\n',
