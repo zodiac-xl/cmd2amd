@@ -23,7 +23,7 @@ import {pathAbsolute,getModulePath} from './util';
 let l = function (file) {
 
     console.log('------------------s');
-    console.log(file+'\n');
+    console.log(file + '\n');
     console.log('------------------e');
 };
 
@@ -39,7 +39,7 @@ let loadedMap = {};
 let moduleEffectMap = {}; //文件增加的时候会影像 引用他的文件
 let needWatch = false;
 let sourceMaps = false;
-
+let ignore = [];
 let callFirst = false;
 function callFirstTime(fn) {
     if (!callFirst) {
@@ -59,6 +59,7 @@ function doTransform(options) {
     moduleRoot = options.moduleRoot || '';
     needWatch = options.needWatch || false;
     sourceMaps = options.sourceMaps || false;
+    ignore = options.ignore || [];
 
 
     del.sync(distPath);
@@ -66,10 +67,24 @@ function doTransform(options) {
 
     if (needWatch) {
         watch(sourcePath + '/**', function (file, e) {
+            let pass = false;
+
+            ignore.some(function (item) {
+                if ((new RegExp(item)).test(file.path)) {
+                    pass = true;
+                    return true;
+                }
+            });
+            if (pass) {
+                return;
+            }
+
             let filePath = file.path;
             switch (file.event) {
                 case 'add':
-                    l(`file ${file.event}: ${filePath}`);
+                    l(`file ${file.event}: ${filePath}`
+                )
+                    ;
 
                     try {
                         babelAndAmd(filePath, distPath);
@@ -136,7 +151,9 @@ function babelAndAmd(filePath, distPath) {
     if (needWatch && loadedMap[filePath] == undefined) {
         watch(filePath, function (file, e) {
             let filePath = file.path;
-            l(`file ${file.event}: ${filePath}`);
+            l(`file ${file.event}: ${filePath}`
+            )
+            ;
             switch (file.event) {
                 case 'add':
                 case 'change':
@@ -209,9 +226,9 @@ function babelAndAmd(filePath, distPath) {
                                     query: {
                                         presets: ['es2015', 'stage-0', 'react'],
                                         plugins: [
-                                            "add-module-exports", "transform-decorators-legacy", "transform-es2015-modules-amd"                                        ]
+                                            "transform-decorators-legacy", "add-module-exports", "transform-es2015-modules-amd"]
                                     },
-                                    exclude: /(node_modules\/[^(@myfe)]|min\.js)/
+                                    exclude: /node_modules\/[^(@myfe)]/
                                 },
                                 {test: /\.css$/, loader: "style-loader!css-loader"},
                                 {test: /\.less$/, loader: "style-loader!css-loader!less-loader"},
@@ -227,9 +244,9 @@ function babelAndAmd(filePath, distPath) {
                         }
                     }
                 ))
-                .pipe(intercept(function(file){
+                .pipe(intercept(function (file) {
                     var contents = file.contents.toString();
-                    contents = contents.replace(/sourceMappingURL=/g,'');
+                    contents = contents.replace(/sourceMappingURL=/g, '');
                     file.contents = new Buffer(contents);
                     return file;
                 }))
@@ -253,7 +270,7 @@ function babelAndAmd(filePath, distPath) {
                 "react",
                 "stage-0"
             ],
-            plugins: ["add-module-exports", "transform-decorators-legacy", "transform-es2015-modules-amd"],
+            plugins: ["transform-decorators-legacy", "add-module-exports"],
             resolveModuleSource: function (source, filename) {
                 let moduleName = '';
                 if (externals[source]) {
@@ -283,7 +300,7 @@ function babelAndAmd(filePath, distPath) {
             }
             let code = result.code;
 
-            if(sourceMaps){
+            if (sourceMaps) {
                 code += `\n //# sourceMappingURL=${path.basename(distFile)}.map`;
                 ef.write(distFile + '.map', JSON.stringify(result.map), 'utf8');
             }
