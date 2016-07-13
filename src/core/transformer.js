@@ -1,46 +1,89 @@
-import path         from 'path'
-import del          from 'del'
-import fu           from 'fileutil';
-import concat       from 'concat-regexp';
-import ef           from 'easy-file'
+'use strict';
 
-import gulp         from 'gulp'
-import webpack      from 'webpack-stream';
-import less         from 'gulp-less';
-import rename       from 'gulp-rename';
-import wrapper      from 'gulp-wrapper';
-import intercept    from 'gulp-intercept';
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-import watch        from 'gulp-watch';
-import pathExists   from 'path-exists';
+var _path = require('path');
 
+var _path2 = _interopRequireDefault(_path);
 
-let babel = require("babel-core");
+var _del = require('del');
 
-import {pathAbsolute,getModulePath} from './util';
+var _del2 = _interopRequireDefault(_del);
 
+var _fileutil = require('fileutil');
 
-let l = function (file) {
+var _fileutil2 = _interopRequireDefault(_fileutil);
+
+var _concatRegexp = require('concat-regexp');
+
+var _concatRegexp2 = _interopRequireDefault(_concatRegexp);
+
+var _easyFile = require('easy-file');
+
+var _easyFile2 = _interopRequireDefault(_easyFile);
+
+var _gulp = require('gulp');
+
+var _gulp2 = _interopRequireDefault(_gulp);
+
+var _webpackStream = require('webpack-stream');
+
+var _webpackStream2 = _interopRequireDefault(_webpackStream);
+
+var _gulpLess = require('gulp-less');
+
+var _gulpLess2 = _interopRequireDefault(_gulpLess);
+
+var _gulpRename = require('gulp-rename');
+
+var _gulpRename2 = _interopRequireDefault(_gulpRename);
+
+var _gulpWrapper = require('gulp-wrapper');
+
+var _gulpWrapper2 = _interopRequireDefault(_gulpWrapper);
+
+var _gulpIntercept = require('gulp-intercept');
+
+var _gulpIntercept2 = _interopRequireDefault(_gulpIntercept);
+
+var _gulpWatch = require('gulp-watch');
+
+var _gulpWatch2 = _interopRequireDefault(_gulpWatch);
+
+var _pathExists = require('path-exists');
+
+var _pathExists2 = _interopRequireDefault(_pathExists);
+
+var _util = require('./util');
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+var babel = require("babel-core");
+
+var l = function l(file) {
 
     console.log('------------------s');
     console.log(file + '\n');
     console.log('------------------e');
 };
 
-
-let distPath;
-let sourcePath;
-let rootPath;
-let externals;
-let needPackRegExp;
-let modulePrefix;
-let moduleRoot;
-let loadedMap = {};
-let moduleEffectMap = {}; //文件增加的时候会影像 引用他的文件
-let needWatch = false;
-let sourceMaps = false;
-let ignore = [];
-let callFirst = false;
+var distPath = void 0;
+var sourcePath = void 0;
+var rootPath = void 0;
+var externals = void 0;
+var needPackRegExp = void 0;
+var modulePrefix = void 0;
+var moduleRoot = void 0;
+var loadedMap = {};
+var moduleEffectMap = {}; //文件增加的时候会影像 引用他的文件
+var needWatch = false;
+var sourceMaps = false;
+var ignore = [];
+var callFirst = false;
 function callFirstTime(fn) {
     if (!callFirst) {
         fn();
@@ -61,16 +104,14 @@ function doTransform(options) {
     sourceMaps = options.sourceMaps || false;
     ignore = options.ignore || [];
 
-
-    del.sync(distPath);
-
+    _del2.default.sync(distPath);
 
     if (needWatch) {
-        watch(sourcePath + '/**', function (file, e) {
-            let pass = false;
+        (0, _gulpWatch2.default)(sourcePath + '/**', function (file, e) {
+            var pass = false;
 
             ignore.some(function (item) {
-                if ((new RegExp(item)).test(file.path)) {
+                if (new RegExp(item).test(file.path)) {
                     pass = true;
                     return true;
                 }
@@ -79,12 +120,10 @@ function doTransform(options) {
                 return;
             }
 
-            let filePath = file.path;
+            var filePath = file.path;
             switch (file.event) {
                 case 'add':
-                    l(`file ${file.event}: ${filePath}`
-                )
-                    ;
+                    l('file ' + file.event + ': ' + filePath);
 
                     try {
                         babelAndAmd(filePath, distPath);
@@ -94,13 +133,11 @@ function doTransform(options) {
                     break;
             }
         });
-
     }
 
-
-    let files = fu.list(sourcePath, {
+    var files = _fileutil2.default.list(sourcePath, {
         excludeDirectory: true, //不包含文件夹
-        matchFunction: function (item) {
+        matchFunction: function matchFunction(item) {
             return item.name.match(/(.)(jsx|js)/);
         }
     });
@@ -110,34 +147,32 @@ function doTransform(options) {
             babelAndAmd(file, distPath);
         } catch (e) {
             l(file);
-            console.log(e)
-
-
+            console.log(e);
         }
-    })
+    });
 }
 
 function getDistFile(filePath) {
-    let ext = path.parse(filePath).ext;
+    var ext = _path2.default.parse(filePath).ext;
     //修正文件名后缀
     if (!ext) {
-        if (pathExists.sync(filePath + '.jsx')) {
-            filePath += '.jsx'
+        if (_pathExists2.default.sync(filePath + '.jsx')) {
+            filePath += '.jsx';
         } else {
-            filePath += '.js'
+            filePath += '.js';
         }
     }
-    let distFile = pathAbsolute(rootPath, filePath.replace('.jsx', '.js'));
+    var distFile = (0, _util.pathAbsolute)(rootPath, filePath.replace('.jsx', '.js'));
     if (distFile) {
-        distFile = path.join(distPath, distFile);
+        distFile = _path2.default.join(distPath, distFile);
     }
-    return distFile
+    return distFile;
 }
 
 function babelAndAmd(filePath, distPath) {
-    let ext = path.parse(filePath).ext;
+    var ext = _path2.default.parse(filePath).ext;
 
-    let distFile = getDistFile(filePath);
+    var distFile = getDistFile(filePath);
     if (!distFile) {
         return;
     }
@@ -147,173 +182,137 @@ function babelAndAmd(filePath, distPath) {
         return;
     }
 
-
     if (needWatch && loadedMap[filePath] == undefined) {
-        watch(filePath, function (file, e) {
-            let filePath = file.path;
-            l(`file ${file.event}: ${filePath}`
-            )
-            ;
+        (0, _gulpWatch2.default)(filePath, function (file, e) {
+            var filePath = file.path;
+            l('file ' + file.event + ': ' + filePath);
             switch (file.event) {
                 case 'add':
                 case 'change':
                     if (file.event == 'add') {
-                        let effectFiles = moduleEffectMap[filePath];
+                        var effectFiles = moduleEffectMap[filePath];
                         effectFiles && effectFiles.forEach(function (effectFile) {
                             loadedMap[effectFile] = false;
                             babelAndAmd(effectFile, distPath);
-                        })
+                        });
                     }
                     loadedMap[filePath] = false;
                     babelAndAmd(filePath, distPath);
                     break;
                 case 'unlink':
                     delete loadedMap[filePath];
-                    let distFile = path.join(distPath, pathAbsolute(rootPath, filePath));
-                    del.sync(distFile);
+                    var distFile = _path2.default.join(distPath, (0, _util.pathAbsolute)(rootPath, filePath));
+                    _del2.default.sync(distFile);
                     break;
             }
         });
-
     }
-
 
     loadedMap[filePath] = true;
 
-
     //for less and css
     if (ext == '.less') {
-        gulp.src(filePath)
-            .pipe(less({}))
-            .pipe(rename(function (path1) {
-                path1.extname = ".css";
-            }))
-            .pipe(gulp.dest(path.dirname(distFile)));
+        _gulp2.default.src(filePath).pipe((0, _gulpLess2.default)({})).pipe((0, _gulpRename2.default)(function (path1) {
+            path1.extname = ".css";
+        })).pipe(_gulp2.default.dest(_path2.default.dirname(distFile)));
         return;
     } else if (ext == '.css') {
-        ef.read(filePath, function (contents) {
-            ef.write(distFile, contents, 'utf8');
+        _easyFile2.default.read(filePath, function (contents) {
+            _easyFile2.default.write(distFile, contents, 'utf8');
         });
         return;
     }
 
-
     //for nodeModule
-    let needPack = false;
+    var needPack = false;
 
-    if (!pathExists.sync(filePath)) {
+    if (!_pathExists2.default.sync(filePath)) {
         return;
     }
     try {
 
-
         needPackRegExp.some(function (item) {
-            if ((new RegExp(item)).test(filePath)) {
+            if (new RegExp(item).test(filePath)) {
                 needPack = true;
                 return true;
             }
         });
 
         if (needPack) {
-            gulp.src(filePath)
-                .pipe(webpack(
-                    {
-                        module: {
-                            loaders: [
-                                {
-                                    test: /\.js/,
-                                    loader: 'babel',
-                                    query: {
-                                        presets: ['es2015', 'stage-0', 'react'],
-                                        plugins: [
-                                            "transform-decorators-legacy", "add-module-exports"]
-                                    },
-                                    exclude: /node_modules\/[^(@myfe)]/
-                                },
-                                {test: /\.css$/, loader: "style-loader!css-loader"},
-                                {test: /\.less$/, loader: "style-loader!css-loader!less-loader"},
-                                {test: /\.json$/, loader: 'json'},
-                                {test: /\.jpe?g$|\.gif$|\.png|\.ico$/, loader: 'file?name=[name].[ext]'},
-                                {test: /\.eot$|\.ttf$|\.svg$|\.woff2?$/, loader: 'file?name=[name].[ext]'}
-                            ]
+            _gulp2.default.src(filePath).pipe((0, _webpackStream2.default)({
+                module: {
+                    loaders: [{
+                        test: /\.js/,
+                        loader: 'babel',
+                        query: {
+                            presets: ['es2015', 'stage-0', 'react'],
+                            plugins: ["transform-decorators-legacy", "add-module-exports"]
                         },
-                        externals: externals,
-                        output: {
-                            library: 'packedModule',
-                            libraryTarget: 'var'
-                        }
-                    }
-                ))
-                .pipe(intercept(function (file) {
-                    var contents = file.contents.toString();
-                    contents = contents.replace(/sourceMappingURL=/g, '');
-                    file.contents = new Buffer(contents);
-                    return file;
-                }))
-                .pipe(wrapper(
-                    {
-                        header: 'define(function(){\n',
-                        footer: '\n return packedModule;\n})'
-                    }
-                ))
-                .pipe(rename(path.basename(filePath)))
-                .pipe(gulp.dest(path.dirname(distFile)));
+                        exclude: /node_modules\/[^(@myfe)]/
+                    }, { test: /\.css$/, loader: "style-loader!css-loader" }, { test: /\.less$/, loader: "style-loader!css-loader!less-loader" }, { test: /\.json$/, loader: 'json' }, { test: /\.jpe?g$|\.gif$|\.png|\.ico$/, loader: 'file?name=[name].[ext]' }, { test: /\.eot$|\.ttf$|\.svg$|\.woff2?$/, loader: 'file?name=[name].[ext]' }]
+                },
+                externals: externals,
+                output: {
+                    library: 'packedModule',
+                    libraryTarget: 'var'
+                }
+            })).pipe((0, _gulpIntercept2.default)(function (file) {
+                var contents = file.contents.toString();
+                contents = contents.replace(/sourceMappingURL=/g, '');
+                file.contents = new Buffer(contents);
+                return file;
+            })).pipe((0, _gulpWrapper2.default)({
+                header: 'define(function(){\n',
+                footer: '\n return packedModule;\n})'
+            })).pipe((0, _gulpRename2.default)(_path2.default.basename(filePath))).pipe(_gulp2.default.dest(_path2.default.dirname(distFile)));
             return;
         }
-
 
         //for custom js
         babel.transformFile(filePath, {
             sourceMaps: sourceMaps,
-            "presets": [
-                "es2015",
-                "react",
-                "stage-0"
-            ],
-            plugins: ["transform-decorators-legacy", "add-module-exports","transform-es2015-modules-amd"],
-            resolveModuleSource: function (source, filename) {
-                let moduleName = '';
+            "presets": ["es2015", "react", "stage-0"],
+            plugins: ["transform-decorators-legacy", "add-module-exports", "transform-es2015-modules-amd"],
+            resolveModuleSource: function resolveModuleSource(source, filename) {
+                var moduleName = '';
                 if (externals[source]) {
                     moduleName = source;
                 } else {
-                    let realPaths = getModulePath(source, filename, rootPath);
+                    var realPaths = (0, _util.getModulePath)(source, filename, rootPath);
                     realPaths.forEach(function (item) {
                         moduleEffectMap[item] = moduleEffectMap[item] || [];
                         moduleEffectMap[item].push(filePath);
                         babelAndAmd(item, distPath);
                         loadedMap[item] = true;
                     });
-                    moduleName = pathAbsolute(moduleRoot, getDistFile(realPaths[0]));
+                    moduleName = (0, _util.pathAbsolute)(moduleRoot, getDistFile(realPaths[0]));
                     if (/\.(css|less)$/.test(moduleName)) {
                         moduleName = moduleName.replace(/\.less$/, '.css');
                         moduleName = 'css!' + moduleName;
                     }
                 }
                 return moduleName;
-            },
+            }
         }, function (err, result) {
             //result; // => { code, map, ast }
             if (err) {
                 l(filePath);
-                console.log(err)
+                console.log(err);
                 return;
             }
-            let code = result.code;
+            var code = result.code;
 
             if (sourceMaps) {
-                code += `\n //# sourceMappingURL=${path.basename(distFile)}.map`;
-                ef.write(distFile + '.map', JSON.stringify(result.map), 'utf8');
+                code += '\n //# sourceMappingURL=' + _path2.default.basename(distFile) + '.map';
+                _easyFile2.default.write(distFile + '.map', JSON.stringify(result.map), 'utf8');
             }
-            ef.write(distFile, code, 'utf8');
-
+            _easyFile2.default.write(distFile, code, 'utf8');
         });
     } catch (e) {
         l(filePath);
-        console.log(e.message)
+        console.log(e.message);
     }
-
 }
 
-
-export default doTransform;
-
+exports.default = doTransform;
+module.exports = exports['default'];
