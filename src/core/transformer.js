@@ -270,7 +270,7 @@ function babelAndAmd(filePath, distPath) {
                 "react",
                 "stage-0"
             ],
-            plugins: ["transform-decorators-legacy", "add-module-exports"],
+            plugins: ["transform-decorators-legacy", "add-module-exports","transform-es2015-modules-amd"],
             resolveModuleSource: function (source, filename) {
                 let moduleName = '';
                 if (externals[source]) {
