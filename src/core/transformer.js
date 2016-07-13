@@ -209,8 +209,7 @@ function babelAndAmd(filePath, distPath) {
                                     query: {
                                         presets: ['es2015', 'stage-0', 'react'],
                                         plugins: [
-                                            ["transform-decorators-legacy"]
-                                        ]
+                                            "add-module-exports", "transform-decorators-legacy", "transform-es2015-modules-amd"                                        ]
                                     },
                                     exclude: /(node_modules\/[^(@myfe)]|min\.js)/
                                 },
