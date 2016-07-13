@@ -1,1 +1,0 @@
-<#include "./competitivePrice/index.ftl">
