@@ -49,8 +49,10 @@ function getModulePath(source, relatePath, rootPath) {
 
                     realPath = path.join(realPath, main);
                 }
-            } else {
+            } else if(pathExists.sync(path.join(realPath, 'index.js'))){
                 realPath = path.join(realPath, 'index.js');
+            }else{
+                realPath = path.join(realPath, '.js');
             }
         }
     }
@@ -86,4 +88,4 @@ function getModulePath(source, relatePath, rootPath) {
 module.exports = {
     pathAbsolute: pathAbsolute,
     getModulePath: getModulePath
-}
+};

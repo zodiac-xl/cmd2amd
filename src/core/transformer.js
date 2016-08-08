@@ -66,7 +66,7 @@ function doTransform(options) {
 
 
     if (needWatch) {
-        watch(sourcePath + '/**', function (file, e) {
+        watch(sourcePath + '/**', function (file) {
             let pass = false;
 
             ignore.some(function (item) {
@@ -149,11 +149,9 @@ function babelAndAmd(filePath, distPath) {
 
 
     if (needWatch && loadedMap[filePath] == undefined) {
-        watch(filePath, function (file, e) {
+        watch(filePath, function (file) {
             let filePath = file.path;
-            l(`file ${file.event}: ${filePath}`
-            )
-            ;
+            l(`file ${file.event}: ${filePath}`);
             switch (file.event) {
                 case 'add':
                 case 'change':
@@ -226,7 +224,7 @@ function babelAndAmd(filePath, distPath) {
                                     query: {
                                         presets: ['es2015', 'stage-0', 'react'],
                                         plugins: [
-                                            "transform-decorators-legacy", "add-module-exports"]
+                                            "transform-decorators-legacy", "add-module-exports", "transform-es2015-modules-amd"]
                                     },
                                     exclude: /node_modules\/[^(@myfe)]/
                                 },
@@ -290,12 +288,12 @@ function babelAndAmd(filePath, distPath) {
                     }
                 }
                 return moduleName;
-            },
+            }
         }, function (err, result) {
             //result; // => { code, map, ast }
             if (err) {
                 l(filePath);
-                console.log(err)
+                console.log(err);
                 return;
             }
             let code = result.code;
