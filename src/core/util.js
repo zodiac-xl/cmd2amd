@@ -25,13 +25,6 @@ function getModulePath(source, relatePath, rootPath) {
     let isNodeMoudle = false;
     if (/([.]\/)/.test(source)) {//自定义模块
         realPath = path.resolve(path.dirname(relatePath), source);
-        pathExists(realPath).then(exists => {
-            console.log(exists);
-            if(!exists){
-                console.log(source,'not fount')
-            }
-            //=> true
-        });
     } else {
         isNodeMoudle = true;
         if (/node_modules/.test(relatePath)) {//如果引用者是node module中的文件 他引用的node module模块应该根据他的package来决定
@@ -46,14 +39,6 @@ function getModulePath(source, relatePath, rootPath) {
         realPath = path.join(rootPath, 'node_modules', source);
 
         if (!pathExists.sync(realPath)) {
-            realPath = path.join(realPath, '.js');
-            pathExists(realPath).then(exists => {
-                console.log(exists);
-                if(!exists){
-                    console.log(source,'not fount')
-                }
-                //=> true
-            });
         } else {
             //如果有package.json 尝试解析得到main
             let pk = path.join(realPath, 'package.json');
@@ -61,20 +46,10 @@ function getModulePath(source, relatePath, rootPath) {
                 let pkJSON = require(pk);
                 let main = pkJSON.main;
                 if (main && pathExists.sync(path.join(realPath, main))) {
-
                     realPath = path.join(realPath, main);
                 }
             } else if(pathExists.sync(path.join(realPath, 'index.js'))){
                 realPath = path.join(realPath, 'index.js');
-            }else{
-                realPath = path.join(realPath, '.js');
-                pathExists(realPath).then(exists => {
-                    console.log(exists);
-                    if(!exists){
-                        console.log(source,'not fount')
-                    }
-                    //=> true
-                });
             }
         }
     }
