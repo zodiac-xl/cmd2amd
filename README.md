@@ -39,7 +39,7 @@ check test file  and task b in gulpfile.babel
 	];
 	let modulePrefix = '/dist/';
 	let needWatch = true;
-	cmd2amd(options);
+	cmd2amd(options,callback);
 
 source:
 

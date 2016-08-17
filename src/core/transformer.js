@@ -41,6 +41,30 @@ let needWatch = false;
 let sourceMaps = false;
 let ignore = [];
 let callFirst = false;
+let working = {
+    map: {},
+    isFirst: false,
+    callBack: null,
+    start: function (path) {
+        working.map[path] = true;
+
+        if (working.isFirst) {
+            console.log('------cmd2amd work start------');
+            working.isFirst = false;
+        }
+    },
+    end: function (path) {
+        delete working.map[path];
+
+        if (working.workEnd()) {
+            console.log('------cmd2amd work end------');
+            working.callBack && working.callBack();
+        }
+    },
+    workEnd: function () {
+        return !Object.keys(working.map).length;
+    }
+};
 function callFirstTime(fn) {
     if (!callFirst) {
         fn();
@@ -48,7 +72,10 @@ function callFirstTime(fn) {
     }
 }
 
-function doTransform(options) {
+function doTransform(options, callBack) {
+
+
+    working.callBack = callBack;
 
     distPath = options.distPath;
     sourcePath = options.sourcePath;
@@ -82,9 +109,7 @@ function doTransform(options) {
             let filePath = file.path;
             switch (file.event) {
                 case 'add':
-                    l(`file ${file.event}: ${filePath}`
-                    )
-                    ;
+                    l(`file ${file.event}: ${filePath}`);
 
                     try {
                         babelAndAmd(filePath, distPath);
@@ -111,8 +136,6 @@ function doTransform(options) {
         } catch (e) {
             l(file);
             console.log(e)
-
-
         }
     })
 }
@@ -213,6 +236,7 @@ function babelAndAmd(filePath, distPath) {
         });
 
         if (needPack) {
+            working.start(filePath);
             gulp.src(filePath)
                 .pipe(webpack(
                     {
@@ -255,12 +279,17 @@ function babelAndAmd(filePath, distPath) {
                     }
                 ))
                 .pipe(rename(path.basename(filePath)))
-                .pipe(gulp.dest(path.dirname(distFile)));
+                .pipe(gulp.dest(path.dirname(distFile))).on('end', function (callback) {
+                    working.end(filePath);
+                    callback && callback();
+                });
+
             return;
         }
 
 
         //for custom js
+        working.start(filePath);
         babel.transformFile(filePath, {
             sourceMaps: sourceMaps,
             "presets": [
@@ -303,13 +332,12 @@ function babelAndAmd(filePath, distPath) {
                 ef.write(distFile + '.map', JSON.stringify(result.map), 'utf8');
             }
             ef.write(distFile, code, 'utf8');
-
+            working.end(filePath);
         });
     } catch (e) {
         l(filePath);
         console.log(e.message)
     }
-
 }
 
 
