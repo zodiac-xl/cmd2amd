@@ -83,7 +83,7 @@ function doTransform(options) {
             switch (file.event) {
                 case 'add':
                     l(`file ${file.event}: ${filePath}`
-                )
+                    )
                     ;
 
                     try {
@@ -222,9 +222,9 @@ function babelAndAmd(filePath, distPath) {
                                     test: /\.js/,
                                     loader: 'babel',
                                     query: {
-                                        presets: ['es2015', 'stage-0', 'react'],
+                                        presets: ['es2015', 'react', 'stage-0'],
                                         plugins: [
-                                            "transform-decorators-legacy", "add-module-exports"]
+                                            "transform-runtime", "transform-decorators-legacy", "add-module-exports"]
                                     },
                                     exclude: /node_modules\/[^(@myfe)]/
                                 },
@@ -268,7 +268,7 @@ function babelAndAmd(filePath, distPath) {
                 "react",
                 "stage-0"
             ],
-            plugins: ["transform-decorators-legacy", "add-module-exports","transform-es2015-modules-amd"],
+            plugins: ["transform-runtime", "transform-decorators-legacy", "add-module-exports", "transform-es2015-modules-amd"],
             resolveModuleSource: function (source, filename) {
                 let moduleName = '';
                 if (externals[source]) {
