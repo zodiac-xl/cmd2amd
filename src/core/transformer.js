@@ -59,6 +59,7 @@ let working = {
         if (working.workEnd()) {
             console.log('------cmd2amd work end------');
             working.callBack && working.callBack();
+            working.callBack = null;
         }
     },
     workEnd: function () {
