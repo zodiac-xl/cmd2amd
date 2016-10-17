@@ -45,8 +45,16 @@ function getModulePath(source, relatePath, rootPath) {
             if (pathExists.sync(pk)) {
                 let pkJSON = require(pk);
                 let main = pkJSON.main;
-                if (main && pathExists.sync(path.join(realPath, main))) {
-                    realPath = path.join(realPath, main);
+                if(main){
+                    if(/\.js$/.test(main)){
+                        if(pathExists.sync(path.join(realPath, main))){
+                            realPath = path.join(realPath, main);
+                        }
+                    }else{
+                        if(pathExists.sync(path.join(realPath, main+'.js'))){
+                            realPath = path.join(realPath, main+'.js');
+                        }
+                    }
                 }
             } else if(pathExists.sync(path.join(realPath, 'index.js'))){
                 realPath = path.join(realPath, 'index.js');
