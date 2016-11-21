@@ -6,7 +6,7 @@ import path                         from 'path'
 //config
 let test = path.join(__dirname, './test');
 let distPath = test + '/dist/amd';
-let sourcePath = test + '/source';
+let sourcePath = test + '/source/components';
 let rootPath = __dirname;
 let externals = {
     "jquery": "jQuery",
@@ -15,7 +15,7 @@ let externals = {
 };
 let needPackRegExp = [
     'node_modules',
-    'side-bar'
+    'usefulDate'
 ];
 let moduleRoot = path.join(__dirname, './test/dist');
 let needWatch = false;
@@ -31,6 +31,13 @@ let options = {
 };
 
 gulp.task('b', function (cb) {
+    options.needWatch = false;
+    cmd2amd(options);
+    cb();
+
+});
+gulp.task('b:watch', function (cb) {
+    options.needWatch = true;
     cmd2amd(options);
     cb();
 
