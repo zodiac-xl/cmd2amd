@@ -7,7 +7,7 @@ import path                         from 'path'
 let test = path.join(__dirname, './test');
 let distPath = test + '/dist/amd';
 let sourcePath = test + '/source';
-let rootPath = path.join(test, '../');
+let rootPath = __dirname;
 let externals = {
     "jquery": "jQuery",
     "react": "React",
@@ -17,7 +17,7 @@ let needPackRegExp = [
     'node_modules',
     'side-bar'
 ];
-let moduleRoot =  path.join(__dirname, './test/dist');
+let moduleRoot = path.join(__dirname, './test/dist');
 let needWatch = false;
 
 let options = {
