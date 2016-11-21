@@ -4,8 +4,6 @@ import fs           from 'fs'
 import ef           from 'easy-file'
 
 
-
-
 function pathAbsolute(dirname, path) {
     let pattern = new RegExp(dirname, 'g');
     pattern.exec(path);
@@ -16,7 +14,6 @@ function pathAbsolute(dirname, path) {
     }
     return result;
 }
-
 
 
 function getModulePath(source, relatePath, rootPath) {
@@ -45,18 +42,18 @@ function getModulePath(source, relatePath, rootPath) {
             if (pathExists.sync(pk)) {
                 let pkJSON = require(pk);
                 let main = pkJSON.main;
-                if(main){
-                    if(/\.js$/.test(main)){
-                        if(pathExists.sync(path.join(realPath, main))){
+                if (main) {
+                    if (/\.js$/.test(main)) {
+                        if (pathExists.sync(path.join(realPath, main))) {
                             realPath = path.join(realPath, main);
                         }
-                    }else{
-                        if(pathExists.sync(path.join(realPath, main+'.js'))){
-                            realPath = path.join(realPath, main+'.js');
+                    } else {
+                        if (pathExists.sync(path.join(realPath, main + '.js'))) {
+                            realPath = path.join(realPath, main + '.js');
                         }
                     }
                 }
-            } else if(pathExists.sync(path.join(realPath, 'index.js'))){
+            } else if (pathExists.sync(path.join(realPath, 'index.js'))) {
                 realPath = path.join(realPath, 'index.js');
             }
         }
@@ -67,19 +64,24 @@ function getModulePath(source, relatePath, rootPath) {
         let realJS = realPath + '.js';
         let realJSX = realPath + '.jsx';
         let realIndex = realPath + '/index.js';
+        let realIndexJsx = realPath + '/index.jsx';
         if (pathExists.sync(realJS)) {
             rs.push(realJS)
         } else if (pathExists.sync(realJSX)) {
             rs.push(realJSX)
         } else if (pathExists.sync(realIndex)) {
             rs.push(realIndex)
+        } else if (pathExists.sync(realIndexJsx)) {
+            rs.push(realIndexJsx)
         } else {
-            if(!isNodeMoudle){
+            if (!isNodeMoudle) {
                 rs.push(realJS);
                 rs.push(realJSX);
                 rs.push(realIndex);
-            }else{
+                rs.push(realIndexJsx);
+            } else {
                 rs.push(realIndex);
+                rs.push(realIndexJsx);
             }
 
         }

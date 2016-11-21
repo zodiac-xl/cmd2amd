@@ -1,6 +1,6 @@
 {
   "name": "cmd2amd",
-  "version": "3.2.7",
+  "version": "3.2.8",
   "description": "",
   "main": "lib/index.js",
   "repository": {
