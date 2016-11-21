@@ -101,6 +101,16 @@ check this file: `index.js`
 	
 	moduleName = path.resolve(moduleRoot,distfilePath); 
 	
+	koa static path
+	    
+        soucefile ='components/statice/a.js';
+	    distfilePath = root+'/amd';
+	    realfilepath=root+'/amd/components/statice/a.js'
+	    moduleRoot = 'root+'/components/statice';
+	    moduleName ='/a.js';
+	    <script src='moduleName'></script>
+	 
+	
 * needWatch (type:Boolean)
 
 	equal webpack watch
