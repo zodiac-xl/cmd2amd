@@ -8,6 +8,9 @@
 
 
 ### Installation
+
+remember to install the peerDependencies;
+
 ```bash
 $ npm install cmd2amd
 ```
