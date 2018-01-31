@@ -1,6 +1,6 @@
 {
   "name": "cmd2amd",
-  "version": "3.2.9",
+  "version": "3.3.0",
   "description": "",
   "main": "lib/index.js",
   "repository": {
@@ -47,6 +47,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-runtime": "^6.18.0",
+    "chalk": "^2.3.0",
     "concat-regexp": "0.0.6",
     "del": "^2.2.0",
     "easy-file": "^0.1.0",

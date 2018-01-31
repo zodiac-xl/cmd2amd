@@ -13,20 +13,28 @@ import intercept    from 'gulp-intercept';
 
 import watch        from 'gulp-watch';
 import pathExists   from 'path-exists';
+import chalk   		from 'chalk';
+import {pathAbsolute,getModulePath} from './util';
 
 
 let babel = require("babel-core");
 
-import {pathAbsolute,getModulePath} from './util';
 
+
+const log = console.log;
+
+
+
+//报警和错误在最后统一输出
+let moduleWarningMessage =[];
+let errorMessage = [];
 
 let l = function (file) {
 
     console.log('------------------s');
-    console.log(file + '\n');
+    console.log(file);
     console.log('------------------e');
 };
-
 
 let distPath;
 let sourcePath;
@@ -36,30 +44,50 @@ let needPackRegExp;
 let modulePrefix;
 let moduleRoot;
 let loadedMap = {};
-let moduleEffectMap = {}; //文件增加的时候会影像 引用他的文件
+let moduleEffectMap = {}; //文件增加的时候会影响 引用他的文件
 let needWatch = false;
 let sourceMaps = false;
 let ignore = [];
 let callFirst = false;
 let working = {
     map: {},
-    isFirst: false,
+    isFirst: true,
     callBack: null,
     start: function (path) {
         working.map[path] = true;
-
         if (working.isFirst) {
-            console.log('------cmd2amd work start------');
+			console.log('------cmd2amd work start------');
             working.isFirst = false;
         }
     },
     end: function (path) {
         delete working.map[path];
-
         if (working.workEnd()) {
+
+			if(moduleWarningMessage.length){
+				log((chalk.yellow('------warning  message------')));
+				moduleWarningMessage.forEach(function (item,i) {
+					let {filename,source}= item;
+					if(i<9){
+						i='0'+(i+1);
+					}
+					log(i+'--------------------------');
+					log(`file: ${filename}`);
+					log(`source: ${chalk.red(source)}`);
+					log('not found\n');
+				});
+				log((chalk.yellow('------warning  message------\n')));
+			}
+
+
+
+
+
+
             console.log('------cmd2amd work end------');
             working.callBack && working.callBack();
             working.callBack = null;
+
         }
     },
     workEnd: function () {
@@ -74,7 +102,6 @@ function callFirstTime(fn) {
 }
 
 function doTransform(options, callBack) {
-
 
     working.callBack = callBack;
 
@@ -130,13 +157,12 @@ function doTransform(options, callBack) {
             return item.name.match(/(.)(jsx|js)/);
         }
     });
-
     files.forEach(function (file) {
         try {
             babelAndAmd(file, distPath);
         } catch (e) {
             l(file);
-            console.log(e)
+            log(e);
         }
     })
 }
@@ -160,9 +186,9 @@ function getDistFile(filePath) {
 
 function babelAndAmd(filePath, distPath) {
     let ext = path.parse(filePath).ext;
-
     let distFile = getDistFile(filePath);
-    if (!distFile) {
+
+	if (!distFile) {
         return;
     }
 
@@ -222,11 +248,11 @@ function babelAndAmd(filePath, distPath) {
 
     //for nodeModule
     let needPack = false;
-
     if (!pathExists.sync(filePath)) {
         return;
     }
-    try {
+
+	try {
 
 
         needPackRegExp.some(function (item) {
@@ -305,7 +331,31 @@ function babelAndAmd(filePath, distPath) {
                     moduleName = source;
                 } else {
                     let realPaths = getModulePath(source, filename, rootPath);
-                    realPaths.forEach(function (item) {
+
+
+
+					let existFile=null;
+					realPaths.some(function (item) {
+						if(pathExists.sync(item)){
+							existFile = item;
+						}
+						return existFile;
+					});
+
+					//检测到单个文件 则只监控此文件；如果没人找到任何文件则监控所有可能得到文件，并warning
+					if(existFile){
+						realPaths = [existFile];
+					}else {
+						moduleWarningMessage.push({
+							filename,
+							source,
+						});
+
+					}
+
+
+
+					realPaths.forEach(function (item) {
                         moduleEffectMap[item] = moduleEffectMap[item] || [];
                         moduleEffectMap[item].push(filePath);
                         babelAndAmd(item, distPath);
@@ -322,8 +372,8 @@ function babelAndAmd(filePath, distPath) {
         }, function (err, result) {
             //result; // => { code, map, ast }
             if (err) {
-                l(filePath);
-                console.log(err);
+				l(filePath);
+				log(err);
                 return;
             }
             let code = result.code;
@@ -336,9 +386,9 @@ function babelAndAmd(filePath, distPath) {
             working.end(filePath);
         });
     } catch (e) {
-        l(filePath);
-        console.log(e.message)
-    }
+		l(filePath);
+		log(e);
+	}
 }
 
 
